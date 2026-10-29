@@ -81,6 +81,10 @@ export const ru = {
     complexity: "Сложность",
     layers: "Слои",
     edgeCategories: "Категории рёбер",
+    risk: "Риск",
+    riskAll: "Все",
+    riskSafe: "Безопасные",
+    riskSensitive: "Чувствительные",
   },
   personaSelector: {
     overview: "Обзор",

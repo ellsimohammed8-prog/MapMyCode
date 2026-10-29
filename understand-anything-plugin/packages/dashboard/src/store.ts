@@ -24,6 +24,10 @@ export interface FilterState {
   edgeCategories: Set<EdgeCategory>;
 }
 
+// Risk filter for the map: "all" shows everything, "safe" shows only green
+// nodes, "sensitive" shows yellow + red nodes (everything needing caution).
+export type RiskFilter = "all" | "safe" | "sensitive";
+
 export const ALL_NODE_TYPES: NodeType[] = ["file", "function", "class", "module", "concept", "config", "document", "service", "table", "endpoint", "pipeline", "schema", "resource", "domain", "flow", "step", "article", "entity", "topic", "claim", "source", "page", "screen", "component", "componentSet", "instance", "token"];
 export const ALL_COMPLEXITIES: Complexity[] = ["simple", "moderate", "complex"];
 export const ALL_EDGE_CATEGORIES: EdgeCategory[] = ["structural", "behavioral", "data-flow", "dependencies", "semantic", "infrastructure", "domain", "knowledge", "design"];
@@ -139,6 +143,7 @@ interface DashboardStore {
 
   // Filter & Export features
   filters: FilterState;
+  riskFilter: RiskFilter;
   filterPanelOpen: boolean;
   exportMenuOpen: boolean;
   pathFinderOpen: boolean;
@@ -180,6 +185,7 @@ interface DashboardStore {
   togglePathFinder: () => void;
   setReactFlowInstance: (instance: ReactFlowInstance | null) => void;
   setFilters: (filters: Partial<FilterState>) => void;
+  setRiskFilter: (riskFilter: RiskFilter) => void;
   resetFilters: () => void;
   hasActiveFilters: () => boolean;
 
@@ -318,6 +324,7 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
   nodeHistory: [],
 
   filters: { ...DEFAULT_FILTERS, nodeTypes: new Set(DEFAULT_FILTERS.nodeTypes), complexities: new Set(DEFAULT_FILTERS.complexities), layerIds: new Set(DEFAULT_FILTERS.layerIds), edgeCategories: new Set(DEFAULT_FILTERS.edgeCategories) },
+  riskFilter: "all",
   filterPanelOpen: false,
   exportMenuOpen: false,
   pathFinderOpen: false,
@@ -597,7 +604,10 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
     filters: { ...state.filters, ...newFilters },
   })),
 
+  setRiskFilter: (riskFilter) => set({ riskFilter }),
+
   resetFilters: () => set({
+    riskFilter: "all",
     filters: {
       nodeTypes: new Set<NodeType>(ALL_NODE_TYPES),
       complexities: new Set<Complexity>(ALL_COMPLEXITIES),
@@ -611,7 +621,8 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
     return filters.nodeTypes.size !== ALL_NODE_TYPES.length
       || filters.complexities.size !== ALL_COMPLEXITIES.length
       || filters.layerIds.size > 0
-      || filters.edgeCategories.size !== ALL_EDGE_CATEGORIES.length;
+      || filters.edgeCategories.size !== ALL_EDGE_CATEGORIES.length
+      || get().riskFilter !== "all";
   },
 
   startTour: () => {

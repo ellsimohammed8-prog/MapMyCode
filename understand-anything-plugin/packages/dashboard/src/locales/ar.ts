@@ -81,6 +81,10 @@ export const ar = {
     complexity: "التعقيد",
     layers: "الطبقات",
     edgeCategories: "فئات الروابط",
+    risk: "الخطر",
+    riskAll: "الكل",
+    riskSafe: "الآمنة",
+    riskSensitive: "الحساسة",
   },
   personaSelector: {
     overview: "نظرة عامة",

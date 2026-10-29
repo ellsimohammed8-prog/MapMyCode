@@ -81,6 +81,10 @@ export const en = {
     complexity: "Complexity",
     layers: "Layers",
     edgeCategories: "Edge Categories",
+    risk: "Risk",
+    riskAll: "All",
+    riskSafe: "Safe",
+    riskSensitive: "Sensitive",
   },
   personaSelector: {
     overview: "Overview",

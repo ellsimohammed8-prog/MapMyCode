@@ -81,6 +81,10 @@ export const vi = {
     complexity: "Độ phức tạp",
     layers: "Tầng",
     edgeCategories: "Nhóm cạnh",
+    risk: "Rủi ro",
+    riskAll: "Tất cả",
+    riskSafe: "An toàn",
+    riskSensitive: "Nhạy cảm",
   },
   personaSelector: {
     overview: "Tổng quan",

@@ -81,6 +81,10 @@ export const ko = {
     complexity: "복잡도",
     layers: "레이어",
     edgeCategories: "엣지 카테고리",
+    risk: "위험도",
+    riskAll: "전체",
+    riskSafe: "안전",
+    riskSensitive: "주의 필요",
   },
   personaSelector: {
     overview: "개요",

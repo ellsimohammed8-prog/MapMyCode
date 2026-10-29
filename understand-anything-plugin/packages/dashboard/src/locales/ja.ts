@@ -81,6 +81,10 @@ export const ja = {
     complexity: "複雑度",
     layers: "レイヤー",
     edgeCategories: "エッジカテゴリ",
+    risk: "リスク",
+    riskAll: "すべて",
+    riskSafe: "安全",
+    riskSensitive: "要注意",
   },
   personaSelector: {
     overview: "概要",

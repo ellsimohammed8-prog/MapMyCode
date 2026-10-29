@@ -403,6 +403,7 @@ function useLayerDetailTopology(): LayerDetailTopology & {
   const affectedNodeIds = useDashboardStore((s) => s.affectedNodeIds);
   const focusNodeId = useDashboardStore((s) => s.focusNodeId);
   const nodeTypeFilters = useDashboardStore((s) => s.nodeTypeFilters);
+  const riskFilter = useDashboardStore((s) => s.riskFilter);
   const drillIntoLayer = useDashboardStore((s) => s.drillIntoLayer);
   const detailLevel = useDashboardStore((s) => s.detailLevel);
   const showFunctionsInClassView = useDashboardStore((s) => s.showFunctionsInClassView);
@@ -472,6 +473,17 @@ function useLayerDetailTopology(): LayerDetailTopology & {
       const effectiveCategory = category ?? "code";
       return nodeTypeFilters[effectiveCategory] !== false;
     });
+
+    // Risk filter: "safe" shows only green nodes, "sensitive" shows yellow +
+    // red nodes (everything needing caution). Nodes without a riskLevel
+    // (old graphs) are hidden while a risk filter is active — unknown is
+    // never shown as safe.
+    if (riskFilter !== "all") {
+      filteredGraphNodes = filteredGraphNodes.filter((n) => {
+        if (riskFilter === "safe") return n.riskLevel === "green";
+        return n.riskLevel === "yellow" || n.riskLevel === "red";
+      });
+    }
 
     let filteredNodeIds = new Set(filteredGraphNodes.map((n) => n.id));
 
@@ -670,6 +682,7 @@ function useLayerDetailTopology(): LayerDetailTopology & {
     affectedNodeIds,
     focusNodeId,
     nodeTypeFilters,
+    riskFilter,
     drillIntoLayer,
     detailLevel,
     showFunctionsInClassView,

@@ -81,6 +81,10 @@ export const zhTW = {
     complexity: "複雜度",
     layers: "層級",
     edgeCategories: "邊類別",
+    risk: "風險",
+    riskAll: "全部",
+    riskSafe: "安全",
+    riskSensitive: "敏感",
   },
   personaSelector: {
     overview: "概覽",

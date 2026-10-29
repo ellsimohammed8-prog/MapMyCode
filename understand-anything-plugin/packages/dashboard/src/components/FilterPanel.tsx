@@ -7,6 +7,8 @@ export default function FilterPanel() {
   const graph = useDashboardStore((s) => s.graph);
   const filters = useDashboardStore((s) => s.filters);
   const setFilters = useDashboardStore((s) => s.setFilters);
+  const riskFilter = useDashboardStore((s) => s.riskFilter);
+  const setRiskFilter = useDashboardStore((s) => s.setRiskFilter);
   const resetFilters = useDashboardStore((s) => s.resetFilters);
   const hasActiveFilters = useDashboardStore((s) => s.hasActiveFilters);
   const filterPanelOpen = useDashboardStore((s) => s.filterPanelOpen);
@@ -105,6 +107,50 @@ export default function FilterPanel() {
       {filterPanelOpen && (
         <div className="absolute end-0 top-full mt-2 w-72 glass rounded-lg shadow-xl overflow-hidden animate-fade-slide-in z-50">
           <div className="p-4 space-y-4">
+            {/* Risk */}
+            <div>
+              <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
+                {t.filterPanel.risk}
+              </h3>
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setRiskFilter("all")}
+                  className={`flex-1 px-2 py-1.5 text-sm rounded-lg transition-colors ${
+                    riskFilter === "all"
+                      ? "bg-gold/20 text-gold"
+                      : "bg-elevated text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  {t.filterPanel.riskAll}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRiskFilter("safe")}
+                  className={`flex-1 px-2 py-1.5 text-sm rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
+                    riskFilter === "safe"
+                      ? "bg-[#7fb98a]/20 text-[#7fb98a]"
+                      : "bg-elevated text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#7fb98a] shrink-0" />
+                  {t.filterPanel.riskSafe}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRiskFilter("sensitive")}
+                  className={`flex-1 px-2 py-1.5 text-sm rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
+                    riskFilter === "sensitive"
+                      ? "bg-[#c97070]/20 text-[#c97070]"
+                      : "bg-elevated text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#c97070] shrink-0" />
+                  {t.filterPanel.riskSensitive}
+                </button>
+              </div>
+            </div>
+
             {/* Node Types */}
             <div>
               <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
