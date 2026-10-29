@@ -23,6 +23,8 @@ export const vi = {
     pressKeyboard: "Nhấn ? để xem phím tắt",
     path: "Đường dẫn",
     theme: "Giao diện",
+    copy: "Sao chép",
+    copied: "Đã sao chép",
   },
   projectOverview: {
     nodes: "Node",
@@ -60,6 +62,11 @@ export const vi = {
     entryPoint: "Điểm vào",
     steps: "Bước",
     implementation: "Triển khai",
+    whatThisIs: "Đây là gì",
+    roleInApp: "Vai trò trong ứng dụng",
+    ifYouChangeIt: "Nếu bạn thay đổi nó",
+    safeChangeInstruction: "Nhờ AI thay đổi nó một cách an toàn",
+    technicalDetails: "Chi tiết kỹ thuật",
   },
   fileExplorer: {
     analyzedFiles: "Tệp đã phân tích",

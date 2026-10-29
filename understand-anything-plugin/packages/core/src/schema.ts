@@ -417,6 +417,14 @@ const FigmaMetaSchema = z.object({
   componentKey: z.string().optional(),
 }).passthrough();
 
+const PlainLanguageMetaSchema = z.object({
+  plainName: z.string().optional(),
+  plainWhat: z.string().optional(),
+  plainRole: z.string().optional(),
+  plainConsequence: z.string().optional(),
+  safeChangeInstruction: z.string().optional(),
+}).passthrough();
+
 export const GraphNodeSchema = z.object({
   id: z.string(),
   type: z.enum([
@@ -437,6 +445,7 @@ export const GraphNodeSchema = z.object({
   domainMeta: DomainMetaSchema.optional(),
   knowledgeMeta: KnowledgeMetaSchema.optional(),
   figmaMeta: FigmaMetaSchema.optional(),
+  plainMeta: PlainLanguageMetaSchema.optional(),
 }).passthrough();
 
 export const GraphEdgeSchema = z.object({

@@ -1,15 +1,15 @@
 <h1 align="center">Understand Anything</h1>
 
 <p align="center">
-  <strong>Turn any codebase, knowledge base, or docs into an interactive knowledge graph you can explore, search, and ask questions about.</strong>
+  <strong>An interactive map of any codebase, written in plain human language — for the ordinary person, not just for programmers.</strong>
   <br />
-  <em>Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.</em>
+  <em>Open any project, click any part, and understand what it does and what happens if you change it — without reading a single line of code.</em>
 </p>
 
 <p align="center">
-  <strong>Understand Anything. <a href="https://egonex.ai">Understand Anyone.</a></strong>
+  <strong>This is a fork of <a href="https://github.com/Egonex-AI/Understand-Anything">Understand-Anything by Egonex-AI</a> (MIT license, kept intact).</strong>
   <br />
-  <em>AI should help people, not replace them.</em>
+  <em>Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.</em>
 </p>
 
 <p align="center">
@@ -42,11 +42,29 @@
 
 ---
 
-**You just joined a new team. The codebase is 200,000 lines of code. Where do you even start?**
+**You want to build with AI, but you cannot read code. You open a project and see files you do not understand.**
 
-Understand Anything is a [Claude Code Plugin](https://code.claude.com/docs/en/plugins-reference#plugins-reference) that analyzes your project with a multi-agent pipeline, builds a knowledge graph of every file, function, class, and dependency, then gives you an interactive dashboard to explore it all visually. Stop reading code blind. Start seeing the big picture.
+This fork turns any codebase into an interactive map written in plain human language. It is built for beginners and ordinary people who direct an AI to build and change software — not for programmers. Open any project, click any part, and the map tells you what it is, what it does inside the app, and what will happen if you change it — before you tell the AI to change anything.
 
-> **The goal isn't a graph that wows you with how complex your codebase is — it's a graph that quietly teaches you how every piece fits together.**
+> **The goal isn't a graph that impresses you with how complex your codebase is — it's a map that teaches an ordinary person how every piece works, in words they already understand.**
+
+**What each node shows:**
+- The **real file name on top, always** — real names are never hidden, so you learn them as you explore.
+- A **plain-language name** underneath it, like a job title ("the cashier" for a payment file).
+- **What the file is**, in one plain sentence, and **its role inside the app**.
+- **What happens if you change it** — the visible behavior that changes and what breaks, specific to that file.
+- A **ready sentence to copy and paste to an AI** to change that file safely, naming what to change and what must not change.
+
+**What is built, and what is still roadmap:**
+
+Built:
+- Any conversation language for generated content, with no fixed language list, plus an Arabic dashboard UI and RTL layout (slice 1).
+- Plain-language nodes: every file node carries its plain name, role, change consequence, and safe-change sentence, shown first in the dashboard with technical details tucked away (slice 2).
+
+Roadmap (not built yet):
+- A beginner story tour: a guided walk through the app as a story, not in dependency order.
+- An ask-the-map question box: ask in plain words ("where is the password saved?") and the map lights up the answer.
+- Red danger markers on sensitive files (login, payments, database) with a plain warning before any change.
 
 ---
 
@@ -55,9 +73,9 @@ Understand Anything is a [Claude Code Plugin](https://code.claude.com/docs/en/pl
 > [!NOTE]
 > **Want to skip the reading?** Try the [live demo](https://understand-anything.com/demo/) in our [homepage](https://understand-anything.com/) — a fully interactive dashboard you can pan, zoom, search, and explore right in your browser.
 
-### Explore the structural graph
+### Explore the map in plain language
 
-Navigate your codebase as an interactive knowledge graph — every file, function, and class is a node you can click, search, and explore. Select any node to see plain-English summaries, relationships, and guided tours.
+Navigate your project as an interactive map — every file is a node you can click, search, and explore. Select any node to see its plain-language name, what it does, what happens if you change it, and the sentence to paste to an AI to change it safely. The real file name always stays on top.
 
 ### Understand business logic
 
@@ -107,9 +125,11 @@ Point `/understand-knowledge` at a [Karpathy-pattern LLM wiki](https://gist.gith
 ### 1. Install the plugin
 
 ```bash
-/plugin marketplace add Egonex-AI/Understand-Anything
+/plugin marketplace add ellsimohammed8-prog/Understand-Anything
 /plugin install understand-anything
 ```
+
+> This installs this fork. The upstream project installs with `/plugin marketplace add Egonex-AI/Understand-Anything` instead.
 
 > **Using a local model?** For privacy or enterprise setups, point your platform at a local model provider such as [Ollama](https://docs.ollama.com/integrations) — follow their integration guide to change the model provider.
 
@@ -136,6 +156,7 @@ On the **first run** in a project — when you don't pass `--language` and no la
 
 The `--language` parameter affects:
 - Node summaries and descriptions in the knowledge graph
+- Plain-language node fields (plain name, role, change consequence, safe-change sentence)
 - Dashboard UI labels, buttons, and tooltips
 - Guided tour explanations
 
@@ -187,9 +208,11 @@ Understand-Anything works across multiple AI coding platforms.
 ### Claude Code (Native)
 
 ```bash
-/plugin marketplace add Egonex-AI/Understand-Anything
+/plugin marketplace add ellsimohammed8-prog/Understand-Anything
 /plugin install understand-anything
 ```
+
+> This installs this fork. The upstream project installs with `/plugin marketplace add Egonex-AI/Understand-Anything` instead.
 
 
 ### One-line install (Codex / OpenCode / OpenClaw / Antigravity / Gemini CLI / Pi Agent / Vibe CLI / VS Code Copilot / Hermes / Cline / KIMI CLI / Trae / Nanobot / Kiro)

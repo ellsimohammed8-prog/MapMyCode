@@ -50,6 +50,25 @@ export interface FigmaMeta {
   componentKey?: string;       // roadmap C — recorded now
 }
 
+// Plain-language explanation of a node, written for a person with no
+// programming background, in the conversation language of the analysis.
+// Technical fields stay untouched; this is an added layer, never a
+// replacement for the real file name or the technical summary.
+export interface PlainLanguageMeta {
+  // Short everyday name, e.g. "the cashier". Shown under the real file name.
+  plainName?: string;
+  // What the file IS, in one plain sentence.
+  plainWhat?: string;
+  // The file's role inside the app, in plain words.
+  plainRole?: string;
+  // What happens if this file is changed, specific to this file: the
+  // visible behavior that changes and what breaks. Never a generic warning.
+  plainConsequence?: string;
+  // One ready sentence the user can paste to an AI to change this file
+  // safely, naming the file path, what to change, and what must not change.
+  safeChangeInstruction?: string;
+}
+
 // GraphNode with 27 types: 5 code + 8 non-code + 3 domain + 5 knowledge + 6 design
 export interface GraphNode {
   id: string;
@@ -64,6 +83,7 @@ export interface GraphNode {
   domainMeta?: DomainMeta;
   knowledgeMeta?: KnowledgeMeta;
   figmaMeta?: FigmaMeta;
+  plainMeta?: PlainLanguageMeta;
 }
 
 // GraphEdge with rich relationship modeling

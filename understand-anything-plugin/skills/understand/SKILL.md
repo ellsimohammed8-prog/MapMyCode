@@ -172,6 +172,13 @@ Determine whether to run a full analysis or incremental update.
     - These patterns take highest priority — they are applied on top of default patterns and `.understandignore` rules. Use `!` prefix to force-include files that would otherwise be excluded.
     - Incremental preparation re-scans the current inventory, so newly supplied exclusions take effect immediately and remove any previously analyzed files they now cover.
 
+ 3.8. **Plain-language node rule:**
+    - Every file-level node (`file`, `config`, `document`, `service`, `pipeline`, `table`, `schema`, `resource`, `endpoint`) MUST carry a `plainMeta` object with five fields, written in `$OUTPUT_LANGUAGE` in plain everyday words a person with no programming background can understand: `plainName` (a short everyday name, like a job title), `plainWhat` (what the file IS, in one sentence), `plainRole` (what the file does inside the app), `plainConsequence` (what happens if this file is changed, specific to THIS file — name the visible behavior that changes and what breaks, never a generic warning), and `safeChangeInstruction` (one ready sentence the user can copy and paste to an AI to change this file safely, naming the file path, what to change, and what must NOT change).
+    - The node `name` ALWAYS stays the real file name (for example `payment-service.ts`). The plain name goes in `plainMeta.plainName` only — never replace `name` with it. The dashboard shows the real name on top of every node, with the plain name below it.
+    - Technical fields (`summary`, `tags`, `complexity`, `languageNotes`) stay exactly as before. `plainMeta` is an added layer, not a replacement.
+    - Function and class nodes are exempt: they live inside their file's node, and the file's `plainMeta` covers them.
+    - The full field rules live in the `file-analyzer` agent definition (at `agents/file-analyzer.md`, "Plain-language fields"). The file-analyzer dispatch in Phase 2 repeats this rule so no batch skips it.
+
 4. **Check for subdomain knowledge graphs to merge:**
    List all `*knowledge-graph*.json` files in `$UA_DIR/` **excluding** `knowledge-graph.json` itself (e.g. `frontend-knowledge-graph.json`, `backend-knowledge-graph.json`). If any subdomain graphs exist, run the merge script bundled with this skill (located next to this SKILL.md file — use the skill directory path, not the project root):
    ```bash
@@ -348,6 +355,8 @@ For each batch, dispatch a subagent using the `file-analyzer` agent definition (
 > Languages: `<languages from Phase 1>`
 >
 > $LANGUAGE_DIRECTIVE
+>
+> **Plain-language node rule (applies to every file in this batch):** Every file-level node MUST carry a `plainMeta` object with `plainName`, `plainWhat`, `plainRole`, `plainConsequence`, and `safeChangeInstruction`, written in the language of the language directive above, in plain everyday words with no code jargon. The consequence must be specific to that file — name the visible behavior that changes and what breaks, never a generic warning. The node `name` always stays the real file name. Full rules: `agents/file-analyzer.md`, "Plain-language fields".
 
 Dispatch prompt template (fill in batch-specific values from `batches.json[i]`):
 
@@ -505,7 +514,7 @@ Pass these parameters in the dispatch prompt:
 >
 > File nodes (all node types — includes code files, config, document, service, pipeline, table, schema, resource, endpoint):
 > ```json
-> [list of {id, type, name, filePath, summary, tags} for ALL file-level nodes — omit complexity, languageNotes]
+> [list of {id, type, name, filePath, summary, tags, plainMeta} for ALL file-level nodes — omit complexity, languageNotes]
 > ```
 >
 > Import edges:
@@ -585,7 +594,7 @@ Pass these parameters in the dispatch prompt:
 >
 > Nodes (all file-level nodes — includes code files, config, document, service, pipeline, table, schema, resource, endpoint):
 > ```json
-> [list of {id, name, filePath, summary, type} for ALL file-level nodes — do NOT include function or class nodes]
+> [list of {id, name, filePath, summary, type, plainMeta} for ALL file-level nodes — do NOT include function or class nodes]
 > ```
 >
 > Layers:
@@ -705,6 +714,11 @@ try {
     if (!n.name) issues.push(`Node[${i}] '${n.id}' missing name`);
     if (!n.summary) issues.push(`Node[${i}] '${n.id}' missing summary`);
     if (!n.tags || !n.tags.length) issues.push(`Node[${i}] '${n.id}' missing tags`);
+    if (['file', 'config', 'document', 'service', 'pipeline', 'table', 'schema', 'resource', 'endpoint'].includes(n.type)) {
+      const pm = n.plainMeta || {};
+      const missing = ['plainName', 'plainWhat', 'plainRole', 'plainConsequence', 'safeChangeInstruction'].filter(k => !pm[k]);
+      if (missing.length) warnings.push(`Node '${n.id}' missing plainMeta fields: ${missing.join(', ')}`);
+    }
     if (seen.has(n.id)) issues.push(`Duplicate node ID '${n.id}' at indices ${seen.get(n.id)} and ${i}`);
     else seen.set(n.id, i);
     nodeIds.add(n.id);
@@ -909,6 +923,10 @@ Report to the user: `[Phase 7/7] Saving knowledge graph...`
 | `pipeline` | CI/CD pipeline configuration | `pipeline:<relative-path>` |
 | `schema` | Schema definition (GraphQL, Protobuf, Prisma) | `schema:<relative-path>` |
 | `resource` | Infrastructure resource (Terraform, CloudFormation) | `resource:<relative-path>` |
+
+### Node Fields (plain-language layer)
+
+Every file-level node also carries an optional `plainMeta` object with five plain-language fields, written in the analysis conversation language: `plainName`, `plainWhat`, `plainRole`, `plainConsequence`, and `safeChangeInstruction`. The node `name` always stays the real file name; the plain name never replaces it. Function and class nodes are exempt. Technical fields (`summary`, `tags`, `complexity`) are unchanged.
 
 ### Edge Types (26 total)
 | Category | Types |

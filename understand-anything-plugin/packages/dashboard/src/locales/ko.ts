@@ -23,6 +23,8 @@ export const ko = {
     pressKeyboard: "? 키를 눌러 키보드 단축키 보기",
     path: "경로",
     theme: "테마",
+    copy: "복사",
+    copied: "복사됨",
   },
   projectOverview: {
     nodes: "노드",
@@ -60,6 +62,11 @@ export const ko = {
     entryPoint: "진입점",
     steps: "단계",
     implementation: "구현",
+    whatThisIs: "이것은 무엇인가",
+    roleInApp: "앱에서의 역할",
+    ifYouChangeIt: "변경하면 어떻게 되나요",
+    safeChangeInstruction: "AI에게 안전하게 변경하도록 요청하기",
+    technicalDetails: "기술 세부 정보",
   },
   fileExplorer: {
     analyzedFiles: "분석된 파일",

@@ -9,6 +9,7 @@ import type {
   StepInfo,
   ResourceInfo,
   SectionInfo,
+  PlainLanguageMeta,
 } from "../types.js";
 import { LanguageRegistry } from "../languages/language-registry.js";
 
@@ -16,6 +17,7 @@ interface FileMeta {
   summary: string;
   tags: string[];
   complexity: "simple" | "moderate" | "complex";
+  plainMeta?: PlainLanguageMeta;
 }
 
 interface FileAnalysisMeta extends FileMeta {
@@ -99,6 +101,7 @@ export class GraphBuilder {
       summary: meta.summary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
   }
 
@@ -125,6 +128,7 @@ export class GraphBuilder {
       summary: meta.fileSummary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
 
     // Create function nodes with "contains" edges
@@ -221,6 +225,7 @@ export class GraphBuilder {
       summary: meta.summary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
     return id;
   }

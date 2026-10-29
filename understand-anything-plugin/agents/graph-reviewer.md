@@ -60,6 +60,10 @@ Verify every **edge** has ALL required fields with correct types:
 **Valid edge types (29 total: 26 structural + 3 domain):**
 `imports`, `exports`, `contains`, `inherits`, `implements`, `calls`, `subscribes`, `publishes`, `middleware`, `reads_from`, `writes_to`, `transforms`, `validates`, `depends_on`, `tested_by`, `configures`, `related`, `similar_to`, `deploys`, `serves`, `migrates`, `documents`, `provisions`, `routes`, `defines_schema`, `triggers`, `contains_flow`, `flow_step`, `cross_domain`
 
+**Check 1b -- Plain-Language Completeness (Warning)**
+
+Every file-level node (`file`, `config`, `document`, `service`, `table`, `endpoint`, `pipeline`, `schema`, `resource`) SHOULD carry a `plainMeta` object with all five fields non-empty: `plainName`, `plainWhat`, `plainRole`, `plainConsequence`, `safeChangeInstruction`. The node `name` MUST still be the real file name. Missing or empty plain-language fields are warnings, not critical failures: graphs built before this rule exist without them. Report the count of file-level nodes missing any field. A generic consequence such as "things may break" counts as missing: the consequence must name the visible behavior that changes for that file.
+
 **Check 2 -- Referential Integrity (Critical)**
 
 - Every edge `source` MUST reference an existing node `id`

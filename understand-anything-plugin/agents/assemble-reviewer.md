@@ -66,6 +66,14 @@ The merge script combines what each batch produced independently. Batches don't 
 - If an edge is missing between two file nodes that should be connected, add it with `type: "imports"`, `direction: "forward"`, `weight: 0.7`.
 - Do NOT add speculative edges — only add edges that are backed by `$IMPORT_MAP` data.
 
+### Step 3b — Check plain-language completeness
+
+Every file-level node should carry a `plainMeta` object with all five fields non-empty: `plainName`, `plainWhat`, `plainRole`, `plainConsequence`, `safeChangeInstruction`. The node `name` must still be the real file name.
+
+- Count file-level nodes missing any field and note the count in your report. Do not invent plain-language text for missing fields: leave them absent and report them.
+- A generic consequence such as "things may break" counts as missing: the consequence must name the visible behavior that changes for that file.
+- Do not fix a node by replacing its `name` with a plain name. If a `name` looks like a plain-language phrase instead of a real file name, flag it in your report.
+
 ### Step 4 — Write results
 
 1. Apply all fixes directly to `assembled-graph.json`.

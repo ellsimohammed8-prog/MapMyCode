@@ -1,3 +1,5 @@
+import type { PlainLanguageMeta } from "../types.js";
+
 export interface LLMFileAnalysis {
   fileSummary: string;
   tags: string[];
@@ -5,6 +7,7 @@ export interface LLMFileAnalysis {
   functionSummaries: Record<string, string>;
   classSummaries: Record<string, string>;
   languageNotes?: string;
+  plainMeta?: PlainLanguageMeta;
 }
 
 export interface LLMProjectSummary {
@@ -20,7 +23,11 @@ export function buildFileAnalysisPrompt(
   filePath: string,
   content: string,
   projectContext: string,
+  plainLanguage?: string,
 ): string {
+  const plainLanguageLine = plainLanguage
+    ? `Write all plainMeta fields in ${plainLanguage}.`
+    : `Write the plainMeta fields in the same language as the rest of this analysis.`;
   return `You are a code analysis assistant. Analyze the following source file and return a JSON object.
 
 Project context: ${projectContext}
@@ -38,6 +45,12 @@ Return a JSON object with the following fields:
 - "functionSummaries": An object mapping function names to 1-sentence summaries.
 - "classSummaries": An object mapping class names to 1-sentence summaries.
 - "languageNotes": Optional notes about language-specific patterns or idioms used.
+- "plainMeta": An object with plain-language explanations of this file, written in everyday words a person with no programming background can understand. Avoid code jargon: do not use words like "middleware", "hook", "endpoint", "parser", "AST", or "singleton" unless you explain the word in plain terms first. ${plainLanguageLine} Fields:
+  - "plainName": A short everyday name for this file, e.g. "the cashier" for a payment file.
+  - "plainWhat": What this file IS, in one plain sentence.
+  - "plainRole": What this file does inside the app, in plain words: what the app would lose if this file stopped working.
+  - "plainConsequence": What happens if this file is changed, specific to THIS file: name the visible behavior that changes and what breaks. Never write a generic warning such as "things may break" — describe the real consequence for this file.
+  - "safeChangeInstruction": One ready sentence the user can copy and paste to an AI to change this file safely. It must name the file path, say exactly what to change, and say what must NOT change.
 
 Respond ONLY with the JSON object, no additional text.`;
 }
@@ -97,6 +110,31 @@ function extractJson(response: string): string {
 const VALID_COMPLEXITIES = new Set(["simple", "moderate", "complex"]);
 
 /**
+ * Picks the plain-language fields out of a parsed plainMeta object.
+ * Returns undefined when the object is missing or carries no text, so
+ * old responses without plainMeta keep parsing exactly as before.
+ */
+function parsePlainMeta(value: unknown): PlainLanguageMeta | undefined {
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+  const record = value as Record<string, unknown>;
+  const pick = (key: string): string | undefined =>
+    typeof record[key] === "string" && (record[key] as string).length > 0
+      ? (record[key] as string)
+      : undefined;
+  const plainMeta: PlainLanguageMeta = {
+    plainName: pick("plainName"),
+    plainWhat: pick("plainWhat"),
+    plainRole: pick("plainRole"),
+    plainConsequence: pick("plainConsequence"),
+    safeChangeInstruction: pick("safeChangeInstruction"),
+  };
+  const hasAny = Object.values(plainMeta).some((v) => v !== undefined);
+  return hasAny ? plainMeta : undefined;
+}
+
+/**
  * Parses an LLM response for file analysis. Returns null if parsing fails.
  */
 export function parseFileAnalysisResponse(
@@ -136,6 +174,7 @@ export function parseFileAnalysisResponse(
         typeof parsed.languageNotes === "string"
           ? parsed.languageNotes
           : undefined,
+      plainMeta: parsePlainMeta(parsed.plainMeta),
     };
   } catch {
     return null;

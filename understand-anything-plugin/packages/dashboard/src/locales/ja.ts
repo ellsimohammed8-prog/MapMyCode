@@ -23,6 +23,8 @@ export const ja = {
     pressKeyboard: "? を押してキーボードショートカットを表示",
     path: "パス",
     theme: "テーマ",
+    copy: "コピー",
+    copied: "コピー済み",
   },
   projectOverview: {
     nodes: "ノード",
@@ -60,6 +62,11 @@ export const ja = {
     entryPoint: "エントリポイント",
     steps: "ステップ",
     implementation: "実装",
+    whatThisIs: "これは何か",
+    roleInApp: "アプリ内での役割",
+    ifYouChangeIt: "変更するとどうなるか",
+    safeChangeInstruction: "AI に安全に変更させる文言",
+    technicalDetails: "技術的な詳細",
   },
   fileExplorer: {
     analyzedFiles: "分析済みファイル",

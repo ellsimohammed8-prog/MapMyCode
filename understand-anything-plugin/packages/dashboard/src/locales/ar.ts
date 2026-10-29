@@ -23,6 +23,8 @@ export const ar = {
     pressKeyboard: "اضغط ? لاختصارات لوحة المفاتيح",
     path: "المسار",
     theme: "السمة",
+    copy: "نسخ",
+    copied: "تم النسخ",
   },
   projectOverview: {
     nodes: "العقد",
@@ -60,6 +62,11 @@ export const ar = {
     entryPoint: "نقطة الدخول",
     steps: "الخطوات",
     implementation: "التنفيذ",
+    whatThisIs: "ما هذا",
+    roleInApp: "دوره داخل التطبيق",
+    ifYouChangeIt: "إذا غيّرته",
+    safeChangeInstruction: "اطلب من الذكاء الاصطناعي أن يغيّره بأمان",
+    technicalDetails: "تفاصيل تقنية",
   },
   fileExplorer: {
     analyzedFiles: "الملفات المحللة",

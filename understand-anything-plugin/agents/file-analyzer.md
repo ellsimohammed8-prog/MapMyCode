@@ -22,6 +22,7 @@ For each file in the batch provided to you, extract structural data via a script
 - `summary` — Write in the specified language
 - `tags` — Use localized tags when natural (e.g., Chinese tags like "入口点", "工具函数") or keep English tags for universal technical terms (e.g., "middleware", "api-handler", "test")
 - `languageNotes` — Write in the specified language when present
+- `plainMeta` — Write all five plain-language fields in the specified language, in plain everyday words (see "Plain-language fields" below)
 Use natural, native-level phrasing. Keep technical terms in English when no standard translation exists.
 
 ---
@@ -238,6 +239,18 @@ Indicators from script data:
 **Language Notes** (optional, your expert judgment):
 If the structural data reveals notable language-specific patterns (e.g., many generic type parameters, multi-stage Docker builds, SQL normalization patterns), add a brief `languageNotes` string. Only add this when genuinely educational.
 
+**Plain-language fields (required for every file-level node):**
+
+Every file-level node (`file`, `config`, `document`, `service`, `pipeline`, `schema`, `resource`, `table`, `endpoint`) MUST carry a `plainMeta` object. Function and class nodes are exempt: they live inside their file's node, and the file's `plainMeta` covers them. Write these fields for a person with no programming background, in the language of the language directive above. Use everyday words only. Never use code jargon (no "middleware", "hook", "endpoint", "parser", "AST", "singleton", "barrel") unless you explain the word in plain terms first.
+
+- `plainName`: A short everyday name for this file, like a job title. Example: a payment file is "the cashier". Keep it to a few words.
+- `plainWhat`: What this file IS, in one plain sentence. Example: "This file is the shop's cash register: it takes the customer's payment and writes down the sale."
+- `plainRole`: What this file does inside the app, in plain words: what the app would lose if this file stopped working. One or two sentences.
+- `plainConsequence`: What happens if this file is changed, specific to THIS file. Name the visible behavior that changes and what breaks, in plain words. Never write a generic warning such as "things may break" or "the app may stop working". Bad: "Changing this file may cause errors." Good: "If you change the prices here, every product in the shop shows the wrong price at checkout, and old orders keep the old prices."
+- `safeChangeInstruction`: One ready sentence the user can copy and paste to an AI to change this file safely. It MUST name the file path, say exactly what to change, and say what must NOT change. Example: "In `src/prices.ts`, change only the weekend discount from 10 to 15 percent, and do not change any other price, tax rule, or the checkout flow."
+
+The node `name` ALWAYS stays the real file name (for example `payment-service.ts`). The plain name goes in `plainMeta.plainName` only — never replace `name` with it. The technical `summary`, `tags`, and `complexity` stay exactly as specified above; `plainMeta` is an added layer, not a replacement.
+
 ### Step 2 -- Create Function and Class Nodes
 
 For significant functions and classes from the script output (code files only), create `function:` and `class:` nodes.
@@ -352,7 +365,14 @@ Produce a single, valid JSON block. Before writing, verify that all arrays and o
       "summary": "Main entry point that bootstraps the application and re-exports all public modules.",
       "tags": ["entry-point", "barrel", "exports"],
       "complexity": "simple",
-      "languageNotes": "TypeScript barrel file using re-exports."
+      "languageNotes": "TypeScript barrel file using re-exports.",
+      "plainMeta": {
+        "plainName": "the front door",
+        "plainWhat": "This file is the front door of the app: it opens first and sends every visitor to the right room.",
+        "plainRole": "Without this file the app never starts, and no page or feature can be reached.",
+        "plainConsequence": "If you change which page loads first here, visitors land on a different page when they open the app, and links from the home screen may stop working.",
+        "safeChangeInstruction": "In `src/index.ts`, change only which page loads first when the app opens, and do not change any other page, link, or startup step."
+      }
     },
     {
       "id": "config:tsconfig.json",
@@ -440,6 +460,7 @@ Produce a single, valid JSON block. Before writing, verify that all arrays and o
 - `summary` (string) -- 1-2 sentence description, NEVER empty
 - `tags` (string[]) -- 3-5 lowercase hyphenated tags, NEVER empty
 - `complexity` (string) -- one of: `simple`, `moderate`, `complex`
+- `plainMeta` (object) -- REQUIRED for every file-level node (`file`, `config`, `document`, `service`, `pipeline`, `schema`, `resource`, `table`, `endpoint`). Function and class nodes are exempt. See "Plain-language fields" above for the five fields and their rules.
 
 **Conditionally required fields:**
 - `filePath` (string) -- REQUIRED for file-level nodes (file, config, document, service, pipeline, schema, resource), optional for sub-file nodes

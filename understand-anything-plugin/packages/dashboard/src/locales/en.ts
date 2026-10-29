@@ -23,6 +23,8 @@ export const en = {
     pressKeyboard: "Press ? for keyboard shortcuts",
     path: "Path",
     theme: "Theme",
+    copy: "Copy",
+    copied: "Copied",
   },
   projectOverview: {
     nodes: "Nodes",
@@ -60,6 +62,11 @@ export const en = {
     entryPoint: "Entry Point",
     steps: "Steps",
     implementation: "Implementation",
+    whatThisIs: "What this is",
+    roleInApp: "Role in the app",
+    ifYouChangeIt: "If you change it",
+    safeChangeInstruction: "Tell the AI to change it safely",
+    technicalDetails: "Technical details",
   },
   fileExplorer: {
     analyzedFiles: "Analyzed Files",

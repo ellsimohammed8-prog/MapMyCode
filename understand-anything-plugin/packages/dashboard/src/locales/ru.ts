@@ -23,6 +23,8 @@ export const ru = {
     pressKeyboard: "Нажмите ? для горячих клавиш",
     path: "Путь",
     theme: "Тема",
+    copy: "Копировать",
+    copied: "Скопировано",
   },
   projectOverview: {
     nodes: "Узлы",
@@ -60,6 +62,11 @@ export const ru = {
     entryPoint: "Точка входа",
     steps: "Шаги",
     implementation: "Реализация",
+    whatThisIs: "Что это",
+    roleInApp: "Роль в приложении",
+    ifYouChangeIt: "Если это изменить",
+    safeChangeInstruction: "Как попросить ИИ безопасно это изменить",
+    technicalDetails: "Технические детали",
   },
   fileExplorer: {
     analyzedFiles: "Проанализированные файлы",

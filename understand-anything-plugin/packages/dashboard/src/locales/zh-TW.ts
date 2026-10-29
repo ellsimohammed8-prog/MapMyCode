@@ -23,6 +23,8 @@ export const zhTW = {
     pressKeyboard: "按 ? 查看鍵盤快捷鍵",
     path: "路徑",
     theme: "主題",
+    copy: "複製",
+    copied: "已複製",
   },
   projectOverview: {
     nodes: "節點",
@@ -60,6 +62,11 @@ export const zhTW = {
     entryPoint: "入口點",
     steps: "步驟",
     implementation: "實作",
+    whatThisIs: "這是什麼",
+    roleInApp: "在應用程式中的作用",
+    ifYouChangeIt: "如果你改動它",
+    safeChangeInstruction: "告訴 AI 如何安全地修改它",
+    technicalDetails: "技術細節",
   },
   fileExplorer: {
     analyzedFiles: "已分析檔案",

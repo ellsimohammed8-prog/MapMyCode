@@ -281,6 +281,7 @@ export default function NodeInfo() {
   const nodeHistory = useDashboardStore((s) => s.nodeHistory);
   const goBackNode = useDashboardStore((s) => s.goBackNode);
   const [languageExpanded, setLanguageExpanded] = useState(true);
+  const [copied, setCopied] = useState(false);
   const { t } = useI18n();
 
   const navigateToNode = useDashboardStore((s) => s.navigateToNode);
@@ -293,6 +294,18 @@ export default function NodeInfo() {
 
   const activeGraph = viewMode === "domain" && domainGraph ? domainGraph : graph;
   const node = activeGraph?.nodes.find((n) => n.id === selectedNodeId) ?? null;
+
+  const handleCopyInstruction = async () => {
+    const text = node?.plainMeta?.safeChangeInstruction;
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   // Resolve history node names for the breadcrumb trail
   const historyNodes = nodeHistory.map((id) => {
@@ -386,7 +399,7 @@ export default function NodeInfo() {
       </div>
 
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-heading text-text-primary">{node.name}</h2>
+        <h2 dir="ltr" className="text-lg font-heading text-text-primary">{node.name}</h2>
         <button
           onClick={() => setFocusNode(focusNodeId === node.id ? null : node.id)}
           className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded transition-colors ${
@@ -399,11 +412,73 @@ export default function NodeInfo() {
         </button>
       </div>
 
+      {node.plainMeta?.plainName && (
+        <p className="text-sm font-medium text-accent mb-3">{node.plainMeta.plainName}</p>
+      )}
+
       <FigmaThumbnail node={node} />
 
-      <p className="text-sm text-text-secondary mb-4 leading-relaxed">
-        {node.summary}
-      </p>
+      {node.plainMeta && (
+        <div className="space-y-3 mb-4">
+          {node.plainMeta.plainWhat && (
+            <div>
+              <h3 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-1">
+                {t.nodeInfo.whatThisIs}
+              </h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {node.plainMeta.plainWhat}
+              </p>
+            </div>
+          )}
+          {node.plainMeta.plainRole && (
+            <div>
+              <h3 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-1">
+                {t.nodeInfo.roleInApp}
+              </h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {node.plainMeta.plainRole}
+              </p>
+            </div>
+          )}
+          {node.plainMeta.plainConsequence && (
+            <div className="rounded-lg border border-gold/40 bg-gold/5 p-3">
+              <h3 className="text-[11px] font-semibold text-gold uppercase tracking-wider mb-1">
+                {t.nodeInfo.ifYouChangeIt}
+              </h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {node.plainMeta.plainConsequence}
+              </p>
+            </div>
+          )}
+          {node.plainMeta.safeChangeInstruction && (
+            <div className="rounded-lg border border-border-subtle bg-elevated/60 p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-1">
+                    {t.nodeInfo.safeChangeInstruction}
+                  </h3>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {node.plainMeta.safeChangeInstruction}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyInstruction}
+                  className="shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded border border-accent/30 text-accent hover:text-accent-bright hover:border-accent/60 transition-colors"
+                >
+                  {copied ? t.common.copied : t.common.copy}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {!node.plainMeta && (
+        <p className="text-sm text-text-secondary mb-4 leading-relaxed">
+          {node.summary}
+        </p>
+      )}
 
       {node.filePath && (
         <div className="text-xs text-text-secondary mb-4 rounded-lg border border-border-subtle bg-elevated/60 p-3">
@@ -430,7 +505,7 @@ export default function NodeInfo() {
         </div>
       )}
 
-      {node.languageNotes && (
+      {node.languageNotes && !node.plainMeta && (
         <div className="mb-4">
           <button
             onClick={() => setLanguageExpanded(!languageExpanded)}
@@ -456,7 +531,7 @@ export default function NodeInfo() {
         </div>
       )}
 
-      {node.tags.length > 0 && (
+      {node.tags.length > 0 && !node.plainMeta && (
         <div className="mb-4">
           <h3 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-2">
             {t.common.tags}
@@ -473,6 +548,37 @@ export default function NodeInfo() {
             ))}
           </div>
         </div>
+      )}
+
+      {node.plainMeta && (
+        <details className="mb-4 rounded-lg border border-border-subtle bg-elevated/60 p-3">
+          <summary className="cursor-pointer text-[11px] font-semibold text-accent uppercase tracking-wider">
+            {t.nodeInfo.technicalDetails}
+          </summary>
+          <div className="mt-3 space-y-3">
+            <p className="text-sm text-text-secondary leading-relaxed">
+              {node.summary}
+            </p>
+            {node.languageNotes && (
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {node.languageNotes}
+              </p>
+            )}
+            {node.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {node.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    dir="ltr"
+                    className="text-[11px] glass text-text-secondary px-2.5 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </details>
       )}
 
       {/* Knowledge-specific details */}

@@ -23,6 +23,8 @@ export const zh = {
     pressKeyboard: "按 ? 查看键盘快捷键",
     path: "路径",
     theme: "主题",
+    copy: "复制",
+    copied: "已复制",
   },
   projectOverview: {
     nodes: "节点",
@@ -60,6 +62,11 @@ export const zh = {
     entryPoint: "入口点",
     steps: "步骤",
     implementation: "实现",
+    whatThisIs: "这是什么",
+    roleInApp: "在应用中的作用",
+    ifYouChangeIt: "如果你改动它",
+    safeChangeInstruction: "告诉 AI 如何安全地修改它",
+    technicalDetails: "技术细节",
   },
   fileExplorer: {
     analyzedFiles: "已分析文件",
