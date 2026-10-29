@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-REPO_URL="${UA_REPO_URL:-https://github.com/Egonex-AI/Understand-Anything.git}"
+REPO_URL="${UA_REPO_URL:-https://github.com/ellsimohammed8-prog/MapMyCode.git}"
 REPO_DIR="${UA_DIR:-$HOME/.understand-anything/repo}"
 PLUGIN_LINK="$HOME/.understand-anything-plugin"
 

@@ -1,15 +1,21 @@
 {
   "name": "understand-anything",
-  "displayName": "Understand Anything",
+  "displayName": "MapMyCode",
   "description": "AI-powered codebase understanding — analyze, visualize, and explain any project",
   "version": "2.9.8",
   "author": {
     "name": "Egonex"
   },
-  "homepage": "https://github.com/Egonex-AI/Understand-Anything",
-  "repository": "https://github.com/Egonex-AI/Understand-Anything",
+  "homepage": "https://github.com/ellsimohammed8-prog/MapMyCode",
+  "repository": "https://github.com/ellsimohammed8-prog/MapMyCode",
   "license": "MIT",
-  "keywords": ["codebase-analysis", "knowledge-graph", "architecture", "onboarding", "dashboard"],
+  "keywords": [
+    "codebase-analysis",
+    "knowledge-graph",
+    "architecture",
+    "onboarding",
+    "dashboard"
+  ],
   "skills": "./understand-anything-plugin/skills/",
   "agents": "./understand-anything-plugin/agents/"
 }
