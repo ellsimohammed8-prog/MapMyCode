@@ -173,6 +173,9 @@ export const ko = {
     startTour: "투어 시작",
     tour: "투어",
     exitTour: "투어 종료",
+    sensitiveStation: "이 단계는 민감합니다",
+    referencedComponents: "이 단계의 파일",
+    wordNote: "쉬운 말로",
   },
   layer: {
     defaultName: "레이어",

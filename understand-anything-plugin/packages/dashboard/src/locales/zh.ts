@@ -173,6 +173,9 @@ export const zh = {
     startTour: "开始导览",
     tour: "导览",
     exitTour: "退出导览",
+    sensitiveStation: "这个站点很敏感",
+    referencedComponents: "本站点的文件",
+    wordNote: "用简单的话说",
   },
   layer: {
     defaultName: "层级",

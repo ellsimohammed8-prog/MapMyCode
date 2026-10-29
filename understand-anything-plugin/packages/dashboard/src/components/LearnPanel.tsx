@@ -58,17 +58,29 @@ export default function LearnPanel() {
           <h3 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-2">
             {t.learnPanel.steps}
           </h3>
-          {tourSteps.map((step, i) => (
-            <div
-              key={step.order}
-              className="flex items-start gap-2 text-xs bg-elevated rounded-lg px-3 py-2 border border-border-subtle"
-            >
-              <span className="text-accent font-mono shrink-0 mt-0.5">
-                {i + 1}.
-              </span>
-              <span className="text-text-secondary">{step.title}</span>
-            </div>
-          ))}
+          {tourSteps.map((step, i) => {
+            const isSensitive = step.nodeIds.some(
+              (id) => graph?.nodes.find((n) => n.id === id)?.riskLevel === "red"
+            );
+            return (
+              <div
+                key={step.order}
+                className="flex items-start gap-2 text-xs bg-elevated rounded-lg px-3 py-2 border border-border-subtle"
+              >
+                <span className="text-accent font-mono shrink-0 mt-0.5">
+                  {i + 1}.
+                </span>
+                {isSensitive && (
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0 mt-1"
+                    style={{ backgroundColor: "#c97070" }}
+                    title={t.nodeInfo.riskDanger}
+                  />
+                )}
+                <span className="text-text-secondary">{step.title}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -82,6 +94,8 @@ export default function LearnPanel() {
   const progressPct = ((currentTourStep + 1) / totalSteps) * 100;
   const isFirst = currentTourStep === 0;
   const isLast = currentTourStep === totalSteps - 1;
+  const stepNodes = graph?.nodes.filter((n) => step.nodeIds.includes(n.id)) ?? [];
+  const redNodes = stepNodes.filter((n) => n.riskLevel === "red");
 
   return (
     <div className="h-full w-full flex flex-col overflow-hidden">
@@ -154,11 +168,29 @@ export default function LearnPanel() {
           </ReactMarkdown>
         </div>
 
-        {/* Language lesson */}
+        {/* Red alert: this stop touches sensitive files */}
+        {redNodes.length > 0 && (
+          <div className="rounded-lg border border-[#c97070]/40 bg-[#c97070]/10 p-3 mb-4 space-y-1.5">
+            <p className="text-xs font-semibold text-text-primary">
+              ⚠️ {t.learnPanel.sensitiveStation}
+            </p>
+            {redNodes.map((n) => (
+              <p key={n.id} className="text-xs text-text-secondary leading-relaxed">
+                <span dir="ltr" className="text-text-primary">
+                  {n.name}
+                </span>
+                <span className="text-text-muted"> — </span>
+                {n.plainMeta?.plainConsequence ?? t.nodeInfo.riskDanger}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {/* Plain-words note */}
         {step.languageLesson && (
           <div className="bg-accent/5 border border-accent/20 rounded p-3 mb-4">
             <h4 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-1.5">
-              Language Lesson
+              {t.learnPanel.wordNote}
             </h4>
             <p className="text-sm text-text-secondary leading-relaxed">
               {step.languageLesson}
@@ -170,7 +202,7 @@ export default function LearnPanel() {
         {step.nodeIds.length > 0 && (
           <div className="mb-4">
             <h4 className="text-[11px] font-semibold text-accent uppercase tracking-wider mb-2">
-              Referenced Components
+              {t.learnPanel.referencedComponents}
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {step.nodeIds.map((nodeId) => {

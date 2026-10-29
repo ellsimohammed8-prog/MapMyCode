@@ -173,6 +173,9 @@ export const vi = {
     startTour: "Bắt đầu tham quan",
     tour: "Tham quan",
     exitTour: "Thoát tham quan",
+    sensitiveStation: "Bước này nhạy cảm",
+    referencedComponents: "Tệp trong bước này",
+    wordNote: "Bằng lời đơn giản",
   },
   layer: {
     defaultName: "Tầng",

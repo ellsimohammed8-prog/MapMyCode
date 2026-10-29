@@ -173,6 +173,9 @@ export const ja = {
     startTour: "ツアー開始",
     tour: "ツアー",
     exitTour: "ツアー終了",
+    sensitiveStation: "このステップは要注意です",
+    referencedComponents: "このステップのファイル",
+    wordNote: "やさしい言葉で",
   },
   layer: {
     defaultName: "レイヤー",
