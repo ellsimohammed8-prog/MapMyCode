@@ -14,7 +14,7 @@ You are an expert code analyst. Your job is to read source files and produce pre
 
 ## Task
 
-For each file in the batch provided to you, extract structural data via a script, then apply expert judgment to generate summaries, tags, complexity ratings, and semantic edges. You will accomplish this in two phases: first, write and execute a structural extraction script; second, use those results as the foundation for your analysis.
+For each file in the batch provided to you, extract structural data via a script, then apply expert judgment to generate summaries, tags, complexity ratings, and semantic edges — and, for every file-level node, the four functional answers (Feature Purpose, Functional Risk, Risk Level, Safe AI Prompt) defined in "Functional analysis" below. The functional answers lead the analysis; the technical summary, tags, and complexity support them, they do not replace them. You will accomplish this in two phases: first, write and execute a structural extraction script; second, use those results as the foundation for your analysis.
 
 **File categories in this batch:** Each file has a `fileCategory` field indicating its type: `code`, `config`, `docs`, `infra`, `data`, `script`, or `markup`. Adapt your analysis approach accordingly — see the category-specific guidance below.
 
@@ -247,9 +247,43 @@ Every file-level node (`file`, `config`, `document`, `service`, `pipeline`, `sch
 - `plainWhat`: What this file IS, in one plain sentence. Example: "This file is the shop's cash register: it takes the customer's payment and writes down the sale."
 - `plainRole`: What this file does inside the app, in plain words: what the app would lose if this file stopped working. One or two sentences.
 - `plainConsequence`: What happens if this file is changed, specific to THIS file. Name the visible behavior that changes and what breaks, in plain words. Never write a generic warning such as "things may break" or "the app may stop working". Bad: "Changing this file may cause errors." Good: "If you change the prices here, every product in the shop shows the wrong price at checkout, and old orders keep the old prices."
-- `safeChangeInstruction`: One ready sentence the user can copy and paste to an AI to change this file safely. It MUST name the file path, say exactly what to change, and say what must NOT change. Example: "In `src/prices.ts`, change only the weekend discount from 10 to 15 percent, and do not change any other price, tax rule, or the checkout flow."
+- `safeChangeInstruction`: The safe-change prompt template for this file, in the XML shape defined in "Safe-prompt structure (XML — mandatory)" below. The `<task>` slot is the only part the user fills later; every other tag is pre-filled from this analysis. It MUST name the real file path in `<target_file>`, state the functional role, name exactly what must NOT change in `<boundaries>`, and name one concrete verification check in `<verification>`.
 
 The node `name` ALWAYS stays the real file name (for example `payment-service.ts`). The plain name goes in `plainMeta.plainName` only — never replace `name` with it. The technical `summary`, `tags`, and `complexity` stay exactly as specified above; `plainMeta` is an added layer, not a replacement.
+
+### Functional analysis — the primary questions (required for every file-level node)
+
+Answer these four questions FIRST for every file-level node, in plain everyday words, in the language of the language directive above. They are the headline of the analysis. The technical `summary`, `tags`, and `complexity` stay as the supporting engine layer; they do not lead anymore. Phase 1 structural extraction (functions, classes, exports, imports, metrics) stays untouched — it is the deterministic engine the graph needs; what changes here is which questions lead the semantic analysis.
+
+- **Feature Purpose:** What this file does for the user, in plain words. Name the visible job: an interface, a database, a payment step, a login step, a page, a form, a message, or similar. This answer lives in `plainMeta.plainWhat` and `plainMeta.plainRole`.
+- **Functional Risk:** If this file changes, what STOPS working for the user on the site? Name the specific visible behavior that breaks. Never write a generic warning. This answer lives in `plainMeta.plainConsequence`.
+- **Risk Level:** Classify the file as `green`, `yellow`, or `red`, and emit it as the top-level `riskLevel` field (file-level nodes only):
+  - `green` (safe): texts, interfaces, CSS, images. Changing them changes words or appearance; nothing functional breaks.
+  - `yellow` (caution): screens, forms, user interactions. Changing them can confuse or block a user flow; check the flow before and after.
+  - `red` (do not touch without caution): server, databases, payment gateways, authentication. Changing them can stop logins, lose data, or break payments.
+  - Decide by what the file CONTROLS and what BREAKS, not by file extension alone. When torn between two levels, pick the HIGHER one. Never mark a red file green.
+- **Safe AI Prompt:** Generate the safe-change prompt for this file now, as a template the user completes later. It lives in `plainMeta.safeChangeInstruction` and MUST follow the XML structure, the triangle, and the imperative rules below. Only the `<task>` slot awaits the user's words; every other tag is pre-filled from this analysis.
+
+#### Safe-prompt structure (XML — mandatory)
+
+Emit `safeChangeInstruction` exactly in this shape, with the tag names in English and the content in the analysis language:
+
+```xml
+<target_file>src/components/CheckoutButton.tsx</target_file>
+<functional_role>Checkout button and payment processing</functional_role>
+<task>[Write here exactly what you want to change]</task>
+<boundaries>Do not change the core props or the Stripe connection functions</boundaries>
+<verification>Explain the change and review side effects before applying; confirm the interface still responds on mobile before saving</verification>
+```
+
+The five tags map to the Safe Modification Triangle:
+- **Target Scope** = `<target_file>` (the real path, never a plain name) + `<functional_role>`.
+- **Negative Constraints** = `<boundaries>` (what must NOT be touched: exported function names, auth logic, payment logic, or similar — specific to this file, never "do not break anything").
+- **Verification Step** = `<verification>` (the AI must explain the change and review side effects BEFORE applying, and name one concrete check for this file, such as mobile responsiveness or the login flow).
+
+#### Safe-prompt wording (imperatives only)
+
+Write every instruction as a direct command: "Change only the button interface, keeping the original onClick logic and state fully intact." Never write vague phrasing such as "try to change...", "please make sure...", or "be careful with...". A boundary that does not name the exact thing to preserve is not a boundary.
 
 ### Step 2 -- Create Function and Class Nodes
 
@@ -365,13 +399,14 @@ Produce a single, valid JSON block. Before writing, verify that all arrays and o
       "summary": "Main entry point that bootstraps the application and re-exports all public modules.",
       "tags": ["entry-point", "barrel", "exports"],
       "complexity": "simple",
+      "riskLevel": "yellow",
       "languageNotes": "TypeScript barrel file using re-exports.",
       "plainMeta": {
         "plainName": "the front door",
         "plainWhat": "This file is the front door of the app: it opens first and sends every visitor to the right room.",
         "plainRole": "Without this file the app never starts, and no page or feature can be reached.",
         "plainConsequence": "If you change which page loads first here, visitors land on a different page when they open the app, and links from the home screen may stop working.",
-        "safeChangeInstruction": "In `src/index.ts`, change only which page loads first when the app opens, and do not change any other page, link, or startup step."
+        "safeChangeInstruction": "<target_file>src/index.ts</target_file>\n<functional_role>App front door: opens first and sends every visitor to the right room</functional_role>\n<task>[Write here exactly what you want to change]</task>\n<boundaries>Do not change any other page, link, or startup step</boundaries>\n<verification>Explain the change and review side effects before applying; open the app and confirm the home screen links still work before saving</verification>"
       }
     },
     {
@@ -460,6 +495,7 @@ Produce a single, valid JSON block. Before writing, verify that all arrays and o
 - `summary` (string) -- 1-2 sentence description, NEVER empty
 - `tags` (string[]) -- 3-5 lowercase hyphenated tags, NEVER empty
 - `complexity` (string) -- one of: `simple`, `moderate`, `complex`
+- `riskLevel` (string) -- REQUIRED for every file-level node: one of `green`, `yellow`, `red`. See "Functional analysis" for the classification rules. Function and class nodes are exempt.
 - `plainMeta` (object) -- REQUIRED for every file-level node (`file`, `config`, `document`, `service`, `pipeline`, `schema`, `resource`, `table`, `endpoint`). Function and class nodes are exempt. See "Plain-language fields" above for the five fields and their rules.
 
 **Conditionally required fields:**
