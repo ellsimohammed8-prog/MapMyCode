@@ -1,4 +1,4 @@
-<h1 align="center">Understand Anything</h1>
+<h1 align="center">Understand-Anything — Code Maps for Humans</h1>
 
 <p align="center">
   <strong>An interactive map of any codebase, written in plain human language — for the ordinary person, not just for programmers.</strong>
@@ -39,6 +39,14 @@
 <p align="center">
   <img src="assets/hero.png" alt="Understand Anything — Turn any codebase into an interactive knowledge graph" width="800" />
 </p>
+
+## 🗺️ See it: a real map, in plain English
+
+This is a real map of [Paperclip](https://github.com/paperclipai/paperclip) — a multi-agent platform — built with the new method: every node shows its real file name on top, a plain-language name, what it does, and what stops if it falls. Red nodes are sensitive (touching them can break core features); green nodes are safe to change.
+
+![Paperclip mind map — plain English](examples/paperclip-mindmap-screenshot.png)
+
+👉 [Open the interactive map](examples/paperclip-mindmap.html) — drag to move, scroll to zoom, click any node for its details, or use **Mark places to modify** to build your own modification plan.
 
 ---
 
