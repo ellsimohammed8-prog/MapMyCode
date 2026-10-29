@@ -44,9 +44,11 @@
 
 This is a real map of [Paperclip](https://github.com/paperclipai/paperclip) — a multi-agent platform — built with the new method: every node shows its real file name on top, a plain-language name, what it does, and what stops if it falls. Red nodes are sensitive (touching them can break core features); green nodes are safe to change.
 
+New: the **How to Build** box at the top walks you through rebuilding the app wave by wave — click a wave to open it, mark its nodes, then move to the next one. And **Mark places to modify** collects your own modification plan from any node.
+
 ![Paperclip mind map — plain English](examples/paperclip-mindmap-screenshot.png)
 
-👉 [Open the interactive map](examples/paperclip-mindmap.html) — drag to move, scroll to zoom, click any node for its details, or use **Mark places to modify** to build your own modification plan.
+👉 [Open the interactive map](examples/paperclip-mindmap.html) — drag to move, scroll to zoom, click any node for its details, use **Mark places to modify** to build your modification plan, or open **How to Build** to follow the rebuild path wave by wave.
 
 ---
 

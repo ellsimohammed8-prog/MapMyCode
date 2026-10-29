@@ -41,6 +41,13 @@
   .node-g.marked circle { stroke: #facc15; stroke-width: 5; }
   .node-g .mark-badge { font-size: 15px; text-anchor: middle; pointer-events: none; display: none; }
   .node-g.marked .mark-badge { display: block; }
+  .buildbox { border-bottom: 1px solid #1f2937; padding: 12px 18px 14px; background: #0f172a; }
+  .build-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+  .build-head span { color: #9ca3af; font-size: 13px; }
+  #buildTree { width: 100%; max-width: 900px; height: 270px; display: block; }
+  .build-detail { margin-top: 6px; }
+  .build-detail p { color: #d1d5db; margin: 6px 0; }
+  .wave-node { cursor: pointer; }
   #tour { margin: 0; border-top: 1px solid #1f2937; padding: 12px 18px; background: #0f172a; }
   #tour h2 { margin: 0 0 8px; font-size: 16px; }
   #tour .phase { color: #cbd5e1; line-height: 1.8; font-size: 14px; }
@@ -72,6 +79,12 @@
   <button class="tbtn" id="fitBtn">⛶ Show all</button>
   <button class="tbtn" id="markBtn">🔧 Mark places to modify</button>
   <button class="chip" id="markCount" style="display:none"></button>
+  <button class="tbtn" id="buildBtn">🔨 How to Build</button>
+</div>
+<div class="buildbox" id="buildBox" style="display:none">
+  <div class="build-head"><b>🔨 How to Build — Rebuilding Paperclip</b><span>Click a wave to open it, build it, then move to the next one. Not a straight list — a tree that opens on click.</span></div>
+  <svg id="buildTree" viewBox="0 0 900 270"></svg>
+  <div class="build-detail" id="buildDetail"></div>
 </div>
 <div class="main">
   <div class="panel" id="panel"></div>
@@ -474,6 +487,69 @@ document.getElementById("markBtn").addEventListener("click", () => {
   if (markMode) showMarkedList(); else defaultPanel();
 });
 document.getElementById("markCount").addEventListener("click", showMarkedList);
+const WAVES = [
+  { t: "Wave 1 — Face & Language", why: "The buyer judges in 10 seconds — this is what wins conversations.", nodes: ["ui", "docs"] },
+  { t: "Wave 2 — One Company", why: "From a multi-company developer tool to a one-company operations platform — it simplifies everything after.", nodes: ["server", "db", "ui"] },
+  { t: "Wave 3 — Approval with Drive", why: "Your edge — the approval flow on Drive documents, the gap from the WAZEFNI project.", nodes: ["server", "ui", "shared", "db"] },
+  { t: "Wave 4 — Visual Workflow Builder", why: "The hardest one — comes after the product proves itself.", nodes: ["ui", "server", "runner"] },
+  { t: "Wave 5 — Ads Connectors", why: "The last one — fully external.", nodes: ["integrations", "mcp-server"] }
+];
+let buildOpen = false, curWave = 0;
+function svgEl(n, attrs, parent) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", n);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e);
+  return e;
+}
+function renderBuildTree() {
+  const svg = document.getElementById("buildTree");
+  svg.innerHTML = "";
+  const rx = 10, ry = 115, rw = 180, rh = 40;
+  const rg = svgEl("g", {}, svg);
+  svgEl("rect", { x: rx, y: ry, width: rw, height: rh, rx: 10, fill: "#0b1220", stroke: "#f59e0b", "stroke-width": 2 }, rg);
+  const rt = svgEl("text", { x: rx + rw / 2, y: ry + 25, "text-anchor": "middle", fill: "#e5e7eb", "font-size": 14 }, rg);
+  rt.textContent = "Rebuilding Paperclip";
+  WAVES.forEach((w, i) => {
+    const y = 12 + i * 52, x = 300, ww = 250, hh = 36;
+    svgEl("path", { d: "M " + (rx + rw) + " " + (ry + rh / 2) + " C 240 " + (ry + rh / 2) + ", 240 " + (y + hh / 2) + ", " + x + " " + (y + hh / 2), fill: "none", stroke: i === curWave ? "#facc15" : "#64748b", "stroke-width": i === curWave ? 3 : 2 }, svg);
+    const g = svgEl("g", { "class": "wave-node" }, svg);
+    g.addEventListener("click", () => showWave(i));
+    svgEl("rect", { x: x, y: y, width: ww, height: hh, rx: 10, fill: "#1f2937", stroke: i === curWave ? "#facc15" : "#374151", "stroke-width": i === curWave ? 3 : 2 }, g);
+    const t = svgEl("text", { x: x + ww / 2, y: y + 23, "text-anchor": "middle", fill: "#e5e7eb", "font-size": 14 }, g);
+    t.textContent = w.t;
+    svgEl("circle", { cx: x + ww + 16, cy: y + hh / 2, r: 11, fill: "#111827", stroke: "#64748b" }, g);
+    const ct = svgEl("text", { x: x + ww + 16, y: y + hh / 2 + 5, "text-anchor": "middle", fill: "#e5e7eb", "font-size": 14 }, g);
+    ct.textContent = i === curWave ? "−" : "+";
+  });
+}
+function showWave(i) {
+  curWave = i;
+  renderBuildTree();
+  const w = WAVES[i];
+  let html = "<b>" + w.t + "</b><p>" + w.why + "</p><div style='display:flex;flex-wrap:wrap;gap:8px;margin:8px 0'>";
+  w.nodes.forEach((id) => {
+    const n = byId(id);
+    if (n) html += "<button class='nbtn' style='width:auto' onclick='selectNode(\"" + id + "\")'><span class='dot' style='background:" + RISK[n.risk][0] + "'></span> " + esc(n.plain) + "</button>";
+  });
+  html += "</div>";
+  html += "<button class='tbtn' onclick='markWave(" + i + ")'>🔧 Mark this wave's nodes</button> ";
+  if (i < WAVES.length - 1) html += "<button class='tbtn' onclick='showWave(" + (i + 1) + ")'>➜ Next wave: " + WAVES[i + 1].t + "</button>";
+  else html += "<span style='color:#9ca3af'>✔️ This is the last wave.</span>";
+  document.getElementById("buildDetail").innerHTML = html;
+}
+function markWave(i) {
+  WAVES[i].nodes.forEach((id) => {
+    if (!marked.has(id)) { marked.add(id); if (nodeEls[id]) nodeEls[id].classList.add("marked"); }
+  });
+  updateMarkUI();
+}
+document.getElementById("buildBtn").addEventListener("click", () => {
+  buildOpen = !buildOpen;
+  document.getElementById("buildBtn").classList.toggle("active", buildOpen);
+  document.getElementById("buildBox").style.display = buildOpen ? "" : "none";
+  if (buildOpen) showWave(curWave);
+});
+if (buildOpen) showWave(curWave);
 function clearFocus() { focusSet = null; selectedId = null; defaultPanel(); refreshDim(); }
 document.querySelectorAll(".chip.risk").forEach((b) => b.addEventListener("click", () => {
   document.querySelectorAll(".chip.risk").forEach((x) => x.classList.remove("active"));
