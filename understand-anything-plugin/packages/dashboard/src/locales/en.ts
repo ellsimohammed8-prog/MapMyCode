@@ -173,6 +173,9 @@ export const en = {
     startTour: "Start Tour",
     tour: "Tour",
     exitTour: "Exit Tour",
+    sensitiveStation: "This stop is sensitive",
+    referencedComponents: "Files in this stop",
+    wordNote: "In plain words",
   },
   layer: {
     defaultName: "Layer",

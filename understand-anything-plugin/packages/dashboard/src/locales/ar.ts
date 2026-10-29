@@ -173,6 +173,9 @@ export const ar = {
     startTour: "بدء الجولة",
     tour: "جولة",
     exitTour: "إنهاء الجولة",
+    sensitiveStation: "هاد المحطة حساسة",
+    referencedComponents: "الملفات ديال هاد المحطة",
+    wordNote: "بكلمات بسيطة",
   },
   layer: {
     defaultName: "طبقة",

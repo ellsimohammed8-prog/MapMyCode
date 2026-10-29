@@ -173,6 +173,9 @@ export const ru = {
     startTour: "Начать обзор",
     tour: "Обзор",
     exitTour: "Завершить обзор",
+    sensitiveStation: "Этот шаг чувствителен",
+    referencedComponents: "Файлы этого шага",
+    wordNote: "Простыми словами",
   },
   layer: {
     defaultName: "Слой",
