@@ -67,6 +67,9 @@ export const ar = {
     ifYouChangeIt: "إذا غيّرته",
     safeChangeInstruction: "اطلب من الذكاء الاصطناعي أن يغيّره بأمان",
     technicalDetails: "تفاصيل تقنية",
+    riskSafe: "تقدر تبدلو بلا خوف على التطبيق",
+    riskCaution: "كيأثر على الشاشات وتفاعل المستخدم",
+    riskDanger: "حساس جداً — مسّو يقدر يطيح وظائف أساسية",
   },
   fileExplorer: {
     analyzedFiles: "الملفات المحللة",

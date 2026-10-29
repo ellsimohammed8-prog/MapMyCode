@@ -67,6 +67,9 @@ export const zhTW = {
     ifYouChangeIt: "如果你改動它",
     safeChangeInstruction: "告訴 AI 如何安全地修改它",
     technicalDetails: "技術細節",
+    riskSafe: "可以放心修改，不會影響應用程式",
+    riskCaution: "會影響畫面和使用者互動",
+    riskDanger: "高度敏感 — 改動可能導致核心功能失效",
   },
   fileExplorer: {
     analyzedFiles: "已分析檔案",

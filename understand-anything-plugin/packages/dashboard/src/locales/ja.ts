@@ -67,6 +67,9 @@ export const ja = {
     ifYouChangeIt: "変更するとどうなるか",
     safeChangeInstruction: "AI に安全に変更させる文言",
     technicalDetails: "技術的な詳細",
+    riskSafe: "アプリに影響を与える心配なく変更できます",
+    riskCaution: "画面やユーザー操作に影響します",
+    riskDanger: "非常に重要 — 変更すると基本機能が壊れる恐れがあります",
   },
   fileExplorer: {
     analyzedFiles: "分析済みファイル",

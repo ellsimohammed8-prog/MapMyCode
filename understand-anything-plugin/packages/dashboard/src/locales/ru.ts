@@ -67,6 +67,9 @@ export const ru = {
     ifYouChangeIt: "Если это изменить",
     safeChangeInstruction: "Как попросить ИИ безопасно это изменить",
     technicalDetails: "Технические детали",
+    riskSafe: "Можно менять без страха за приложение",
+    riskCaution: "Влияет на экраны и взаимодействие с пользователем",
+    riskDanger: "Очень чувствительный — изменение может сломать основные функции",
   },
   fileExplorer: {
     analyzedFiles: "Проанализированные файлы",

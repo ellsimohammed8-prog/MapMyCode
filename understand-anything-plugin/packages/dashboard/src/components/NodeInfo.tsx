@@ -40,6 +40,16 @@ const complexityBadgeColors: Record<string, string> = {
   complex: "text-[#c97070] border border-[#c97070]/30 bg-[#c97070]/10",
 };
 
+// Risk badge colors keyed by riskLevel — dot + tinted box. The sentence
+// carries the meaning in words, never color alone. No badge renders when
+// riskLevel is absent (old graphs, function/class nodes): unknown is never
+// shown as green.
+const riskBadgeConfig = {
+  green: { dot: "bg-[#7fb98a]", box: "border-[#7fb98a]/40 bg-[#7fb98a]/10" },
+  yellow: { dot: "bg-[#d8a94e]", box: "border-[#d8a94e]/40 bg-[#d8a94e]/10" },
+  red: { dot: "bg-[#c97070]", box: "border-[#c97070]/40 bg-[#c97070]/10" },
+} as const;
+
 function getDirectionalLabel(edgeType: string, isSource: boolean, t: ReturnType<typeof useI18n>["t"]): string {
   // edgeLabels only defines the labels that have explicit translations; the new
   // design edge types (instance_of/variant_of/uses_token) intentionally fall back
@@ -344,6 +354,21 @@ export default function NodeInfo() {
   const complexityBadge =
     complexityBadgeColors[node.complexity] ?? complexityBadgeColors.simple;
 
+  // Risk badge data — only for exact green/yellow/red values. Anything else
+  // (absent, old graphs, function/class nodes) renders no badge at all.
+  const riskLevel =
+    node.riskLevel === "green" || node.riskLevel === "yellow" || node.riskLevel === "red"
+      ? node.riskLevel
+      : null;
+  const riskText =
+    riskLevel === "green"
+      ? t.nodeInfo.riskSafe
+      : riskLevel === "yellow"
+        ? t.nodeInfo.riskCaution
+        : riskLevel === "red"
+          ? t.nodeInfo.riskDanger
+          : null;
+
   if (import.meta.env.DEV && !(knownType in typeBadgeColors)) {
     console.warn(`[NodeInfo] Unknown node type "${node.type}" — using "file" badge colors`);
   }
@@ -411,6 +436,13 @@ export default function NodeInfo() {
           {focusNodeId === node.id ? t.common.unfocus : t.common.focus}
         </button>
       </div>
+
+      {riskLevel && riskText && (
+        <div className={`flex items-center gap-2 rounded-lg border p-3 mb-3 ${riskBadgeConfig[riskLevel].box}`}>
+          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${riskBadgeConfig[riskLevel].dot}`} />
+          <p className="text-sm text-text-secondary leading-relaxed">{riskText}</p>
+        </div>
+      )}
 
       {node.plainMeta?.plainName && (
         <p className="text-sm font-medium text-accent mb-3">{node.plainMeta.plainName}</p>

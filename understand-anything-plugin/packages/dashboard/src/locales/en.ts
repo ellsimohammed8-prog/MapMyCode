@@ -67,6 +67,9 @@ export const en = {
     ifYouChangeIt: "If you change it",
     safeChangeInstruction: "Tell the AI to change it safely",
     technicalDetails: "Technical details",
+    riskSafe: "You can change it without fear for the app",
+    riskCaution: "It affects screens and user interaction",
+    riskDanger: "Highly sensitive — touching it can break core features",
   },
   fileExplorer: {
     analyzedFiles: "Analyzed Files",

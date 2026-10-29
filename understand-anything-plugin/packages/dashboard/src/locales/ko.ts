@@ -67,6 +67,9 @@ export const ko = {
     ifYouChangeIt: "변경하면 어떻게 되나요",
     safeChangeInstruction: "AI에게 안전하게 변경하도록 요청하기",
     technicalDetails: "기술 세부 정보",
+    riskSafe: "앱에 대한 걱정 없이 변경할 수 있습니다",
+    riskCaution: "화면과 사용자 상호작용에 영향을 줍니다",
+    riskDanger: "매우 민감합니다 — 건드리면 핵심 기능이 중단될 수 있습니다",
   },
   fileExplorer: {
     analyzedFiles: "분석된 파일",

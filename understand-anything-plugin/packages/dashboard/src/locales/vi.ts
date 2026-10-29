@@ -67,6 +67,9 @@ export const vi = {
     ifYouChangeIt: "Nếu bạn thay đổi nó",
     safeChangeInstruction: "Nhờ AI thay đổi nó một cách an toàn",
     technicalDetails: "Chi tiết kỹ thuật",
+    riskSafe: "Bạn có thể thay đổi mà không lo ảnh hưởng đến ứng dụng",
+    riskCaution: "Ảnh hưởng đến màn hình và tương tác người dùng",
+    riskDanger: "Rất nhạy cảm — chạm vào có thể làm hỏng các chức năng cốt lõi",
   },
   fileExplorer: {
     analyzedFiles: "Tệp đã phân tích",
