@@ -86,6 +86,11 @@ export const zhTW = {
     riskSafe: "安全",
     riskSensitive: "敏感",
   },
+  featuresView: {
+    supplementaryTitle: "輔助檔案與元件",
+    otherFiles: "其他檔案",
+    noTour: "此圖譜尚無旅程步驟 — 所有檔案已在下方按層分組列出。",
+  },
   personaSelector: {
     overview: "概覽",
     overviewDesc: "高層次架構視圖",

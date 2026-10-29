@@ -86,6 +86,11 @@ export const ar = {
     riskSafe: "الآمنة",
     riskSensitive: "الحساسة",
   },
+  featuresView: {
+    supplementaryTitle: "ملفات ومكونات مساعدة",
+    otherFiles: "ملفات أخرى",
+    noTour: "لا توجد خطوات رحلة في هذا الرسم بعد — كل الملفات مذكورة أسفله، مقسمة حسب الطبقة.",
+  },
   personaSelector: {
     overview: "نظرة عامة",
     overviewDesc: "عرض معماري عالي المستوى",

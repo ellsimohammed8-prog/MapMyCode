@@ -86,6 +86,11 @@ export const vi = {
     riskSafe: "An toàn",
     riskSensitive: "Nhạy cảm",
   },
+  featuresView: {
+    supplementaryTitle: "Tệp và thành phần hỗ trợ",
+    otherFiles: "Tệp khác",
+    noTour: "Đồ thị này chưa có bước hành trình — mọi tệp đều được liệt kê bên dưới, nhóm theo lớp.",
+  },
   personaSelector: {
     overview: "Tổng quan",
     overviewDesc: "Góc nhìn kiến trúc tổng thể",

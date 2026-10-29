@@ -86,6 +86,11 @@ export const ru = {
     riskSafe: "Безопасные",
     riskSensitive: "Чувствительные",
   },
+  featuresView: {
+    supplementaryTitle: "Вспомогательные файлы и компоненты",
+    otherFiles: "Прочие файлы",
+    noTour: "В этом графе пока нет шагов пути — все файлы перечислены ниже, сгруппированные по слоям.",
+  },
   personaSelector: {
     overview: "Обзор",
     overviewDesc: "Высокоуровневый архитектурный вид",

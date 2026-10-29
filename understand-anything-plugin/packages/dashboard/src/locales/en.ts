@@ -86,6 +86,11 @@ export const en = {
     riskSafe: "Safe",
     riskSensitive: "Sensitive",
   },
+  featuresView: {
+    supplementaryTitle: "Helper files and components",
+    otherFiles: "Other files",
+    noTour: "No journey steps in this graph yet — every file is listed below, grouped by layer.",
+  },
   personaSelector: {
     overview: "Overview",
     overviewDesc: "High-level architecture view",

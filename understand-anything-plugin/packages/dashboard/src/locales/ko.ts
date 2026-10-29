@@ -86,6 +86,11 @@ export const ko = {
     riskSafe: "안전",
     riskSensitive: "주의 필요",
   },
+  featuresView: {
+    supplementaryTitle: "보조 파일 및 컴포넌트",
+    otherFiles: "기타 파일",
+    noTour: "이 그래프에는 아직 여정 단계가 없습니다 — 모든 파일이 아래에 레이어별로 표시됩니다.",
+  },
   personaSelector: {
     overview: "개요",
     overviewDesc: "고수준 아키텍처 뷰",

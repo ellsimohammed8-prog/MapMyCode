@@ -86,6 +86,11 @@ export const ja = {
     riskSafe: "安全",
     riskSensitive: "要注意",
   },
+  featuresView: {
+    supplementaryTitle: "補助ファイルとコンポーネント",
+    otherFiles: "その他のファイル",
+    noTour: "このグラフにはまだジャーニーのステップがありません — すべてのファイルは以下にレイヤー別に表示されます。",
+  },
   personaSelector: {
     overview: "概要",
     overviewDesc: "高レベルアーキテクチャビュー",

@@ -86,6 +86,11 @@ export const zh = {
     riskSafe: "安全",
     riskSensitive: "敏感",
   },
+  featuresView: {
+    supplementaryTitle: "辅助文件和组件",
+    otherFiles: "其他文件",
+    noTour: "此图谱暂无旅程步骤 — 所有文件已在下方按层分组列出。",
+  },
   personaSelector: {
     overview: "概览",
     overviewDesc: "高层次架构视图",
