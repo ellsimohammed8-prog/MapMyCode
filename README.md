@@ -1,4 +1,4 @@
-<h1 align="center">Understand-Anything — Code Maps for Humans</h1>
+<h1 align="center">MapMyCode</h1>
 
 <p align="center">
   <strong>An interactive map of any codebase, written in plain human language — for the ordinary person, not just for programmers.</strong>
@@ -7,7 +7,9 @@
 </p>
 
 <p align="center">
-  <strong>This is a fork of <a href="https://github.com/Egonex-AI/Understand-Anything">Understand-Anything by Egonex-AI</a> (MIT license, kept intact).</strong>
+  <strong>Origin: MapMyCode started as a fork of <a href="https://github.com/Egonex-AI/Understand-Anything">Understand-Anything by Egonex-AI</a> — open source, MIT license, kept intact.</strong>
+  <br />
+  <em>We kept its analysis engine and rebuilt what a person sees for the ordinary person: plain-language nodes (real file name on top, always), any conversation language, a red/yellow/green risk radar, a feature view, an intent box that fills the safe-change prompt, and a story tour. The Paperclip demo below also shows mark-to-modify and a How to Build guide.</em>
   <br />
   <em>Works with Claude Code, Codex, Cursor, Copilot, Gemini CLI, and more.</em>
 </p>
