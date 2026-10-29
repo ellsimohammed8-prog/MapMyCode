@@ -17,6 +17,7 @@ interface FileMeta {
   summary: string;
   tags: string[];
   complexity: "simple" | "moderate" | "complex";
+  riskLevel?: "green" | "yellow" | "red";
   plainMeta?: PlainLanguageMeta;
 }
 
@@ -101,6 +102,7 @@ export class GraphBuilder {
       summary: meta.summary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.riskLevel ? { riskLevel: meta.riskLevel } : {}),
       ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
   }
@@ -128,6 +130,7 @@ export class GraphBuilder {
       summary: meta.fileSummary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.riskLevel ? { riskLevel: meta.riskLevel } : {}),
       ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
 
@@ -225,6 +228,7 @@ export class GraphBuilder {
       summary: meta.summary,
       tags: meta.tags,
       complexity: meta.complexity,
+      ...(meta.riskLevel ? { riskLevel: meta.riskLevel } : {}),
       ...(meta.plainMeta ? { plainMeta: meta.plainMeta } : {}),
     });
     return id;

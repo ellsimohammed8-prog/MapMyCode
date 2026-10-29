@@ -441,6 +441,7 @@ export const GraphNodeSchema = z.object({
   summary: z.string(),
   tags: z.array(z.string()),
   complexity: z.enum(["simple", "moderate", "complex"]),
+  riskLevel: z.enum(["green", "yellow", "red"]).optional(),
   languageNotes: z.string().optional(),
   domainMeta: DomainMetaSchema.optional(),
   knowledgeMeta: KnowledgeMetaSchema.optional(),

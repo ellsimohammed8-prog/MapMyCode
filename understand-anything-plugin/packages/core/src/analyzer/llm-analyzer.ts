@@ -4,6 +4,7 @@ export interface LLMFileAnalysis {
   fileSummary: string;
   tags: string[];
   complexity: "simple" | "moderate" | "complex";
+  riskLevel?: "green" | "yellow" | "red";
   functionSummaries: Record<string, string>;
   classSummaries: Record<string, string>;
   languageNotes?: string;
@@ -42,6 +43,7 @@ Return a JSON object with the following fields:
 - "fileSummary": A concise summary of what this file does (1-2 sentences).
 - "tags": An array of relevant tags (e.g., ["utility", "async", "api"]).
 - "complexity": One of "simple", "moderate", or "complex".
+- "riskLevel": One of "green", "yellow", or "red" — traffic-light risk for the ordinary user: green = safe to change (texts, interfaces, CSS, images), yellow = caution (screens, forms, user interactions), red = do not touch without caution (server, databases, payment, authentication). Classify by what the file controls and what breaks; when torn between two levels, pick the higher one.
 - "functionSummaries": An object mapping function names to 1-sentence summaries.
 - "classSummaries": An object mapping class names to 1-sentence summaries.
 - "languageNotes": Optional notes about language-specific patterns or idioms used.
@@ -50,7 +52,7 @@ Return a JSON object with the following fields:
   - "plainWhat": What this file IS, in one plain sentence.
   - "plainRole": What this file does inside the app, in plain words: what the app would lose if this file stopped working.
   - "plainConsequence": What happens if this file is changed, specific to THIS file: name the visible behavior that changes and what breaks. Never write a generic warning such as "things may break" — describe the real consequence for this file.
-  - "safeChangeInstruction": One ready sentence the user can copy and paste to an AI to change this file safely. It must name the file path, say exactly what to change, and say what must NOT change.
+  - "safeChangeInstruction": A safe-change prompt template in this five-tag XML shape, tag names in English, content in the analysis language, imperatives only: <target_file>real file path</target_file> <functional_role>what the file does for the user</functional_role> <task>[Write here exactly what you want to change]</task> <boundaries>exactly what must NOT be touched for this file</boundaries> <verification>explain the change and review side effects before applying; one concrete check for this file</verification>. The <task> slot stays open: never invent a change request.
 
 Respond ONLY with the JSON object, no additional text.`;
 }
@@ -108,6 +110,7 @@ function extractJson(response: string): string {
 }
 
 const VALID_COMPLEXITIES = new Set(["simple", "moderate", "complex"]);
+const VALID_RISK_LEVELS = new Set(["green", "yellow", "red"]);
 
 /**
  * Picks the plain-language fields out of a parsed plainMeta object.
@@ -160,6 +163,11 @@ export function parseFileAnalysisResponse(
         ? parsed.tags.filter((t: unknown) => typeof t === "string")
         : [],
       complexity,
+      riskLevel:
+        typeof parsed.riskLevel === "string" &&
+        VALID_RISK_LEVELS.has(parsed.riskLevel)
+          ? (parsed.riskLevel as "green" | "yellow" | "red")
+          : undefined,
       functionSummaries:
         typeof parsed.functionSummaries === "object" &&
         parsed.functionSummaries !== null

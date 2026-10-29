@@ -221,6 +221,14 @@ Repeat phases 2-4 for each main user action the app offers (a shop has ordering;
 
 If the project has no interface layer (a library or tool, not an app), start at the front door the project's USER touches first (its main entry, per `plainMeta`) and follow the same four phases with the project's own terms: the user asks for something, the tool does it, the result is kept or returned.
 
+### Red-step warnings (danger radar link)
+
+The dispatch passes each file-level node's `riskLevel` alongside `plainMeta`. When a step's `nodeIds` include a node with `riskLevel` "red", the step description MUST include a clear warning in plain words, in the analysis language, naming the specific user-visible process that would stop — never a generic warning. Shape (adapt the process to the file's `plainConsequence`):
+
+> ⚠️ This stop passes through a sensitive file (🔴 red) — any change in it could stop the entire purchase process for users.
+
+If a step includes more than one red node, name each one's process briefly. Red warnings live inside the step description (no new output field), so the output schema stays unchanged.
+
 ### Step Descriptions
 
 For each step, use the `nodeSummaryIndex` and the files' `plainMeta` to access plain meanings without re-reading files. Each description must:
@@ -267,7 +275,7 @@ The following example is illustrative. Use node IDs and project facts from the p
   {
     "order": 3,
     "title": "Your order is saved",
-    "description": "Your order is written in the shop's order book, with what you bought and what you paid. If this book were lost, the shop would forget your order and could not prepare your delivery.",
+    "description": "Your order is written in the shop's order book, with what you bought and what you paid. If this book were lost, the shop would forget your order and could not prepare your delivery. ⚠️ This stop passes through a sensitive file (🔴 red) — any change in it could stop every new order from being saved.",
     "nodeIds": ["table:migrations/001.sql:orders"]
   },
   {

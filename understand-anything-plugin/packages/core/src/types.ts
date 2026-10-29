@@ -64,8 +64,10 @@ export interface PlainLanguageMeta {
   // What happens if this file is changed, specific to this file: the
   // visible behavior that changes and what breaks. Never a generic warning.
   plainConsequence?: string;
-  // One ready sentence the user can paste to an AI to change this file
-  // safely, naming the file path, what to change, and what must not change.
+  // Safe-change prompt template for this file, in the five-tag XML shape
+  // (target_file, functional_role, task, boundaries, verification). The
+  // task slot is the only part the user fills later; the rest is
+  // pre-filled from the analysis.
   safeChangeInstruction?: string;
 }
 
@@ -79,6 +81,11 @@ export interface GraphNode {
   summary: string;
   tags: string[];
   complexity: "simple" | "moderate" | "complex";
+  // Traffic-light risk for the ordinary user (file-level nodes only):
+  // green = safe to change, yellow = caution, red = do not touch without
+  // caution (server, databases, payment, auth). Absent = unknown (graphs
+  // built before this rule).
+  riskLevel?: "green" | "yellow" | "red";
   languageNotes?: string;
   domainMeta?: DomainMeta;
   knowledgeMeta?: KnowledgeMeta;

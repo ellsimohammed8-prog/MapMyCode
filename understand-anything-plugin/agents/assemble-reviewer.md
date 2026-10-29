@@ -73,6 +73,7 @@ Every file-level node should carry a `plainMeta` object with all five fields non
 - Count file-level nodes missing any field and note the count in your report. Do not invent plain-language text for missing fields: leave them absent and report them.
 - A generic consequence such as "things may break" counts as missing: the consequence must name the visible behavior that changes for that file.
 - Do not fix a node by replacing its `name` with a plain name. If a `name` looks like a plain-language phrase instead of a real file name, flag it in your report.
+- File-level nodes should also carry `riskLevel` (`green`, `yellow`, or `red`), and `safeChangeInstruction` should be in the five-tag XML shape with the `<task>` slot present. Count nodes missing either and note the counts in your report. Never strip these fields when fixing other issues.
 
 ### Step 4 — Write results
 

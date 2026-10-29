@@ -602,7 +602,7 @@ Pass these parameters in the dispatch prompt:
 >
 > Nodes (all file-level nodes — includes code files, config, document, service, pipeline, table, schema, resource, endpoint):
 > ```json
-> [list of {id, name, filePath, summary, type, plainMeta} for ALL file-level nodes — do NOT include function or class nodes]
+> [list of {id, name, filePath, summary, type, plainMeta, riskLevel} for ALL file-level nodes — do NOT include function or class nodes]
 > ```
 >
 > Layers:
