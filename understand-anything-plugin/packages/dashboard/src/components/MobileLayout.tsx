@@ -5,6 +5,7 @@ import { useI18n } from "../contexts/I18nContext";
 import GraphView from "./GraphView";
 import DomainGraphView from "./DomainGraphView";
 import KnowledgeGraphView from "./KnowledgeGraphView";
+import FeaturesView from "./FeaturesView";
 import SearchBar from "./SearchBar";
 import NodeInfo from "./NodeInfo";
 import ProjectOverview from "./ProjectOverview";
@@ -161,6 +162,8 @@ export default function MobileLayout({
         >
           {viewMode === "knowledge" ? (
             <KnowledgeGraphView />
+          ) : viewMode === "feature" ? (
+            <FeaturesView />
           ) : viewMode === "domain" && domainGraph ? (
             <DomainGraphView />
           ) : (

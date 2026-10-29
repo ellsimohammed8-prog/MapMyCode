@@ -120,6 +120,7 @@ export const vi = {
     path: "Đường dẫn",
     help: "Trợ giúp",
     structural: "Cấu trúc",
+    feature: "Bản đồ tính năng",
     domain: "Nghiệp vụ",
   },
   domainView: {

@@ -120,6 +120,7 @@ export const ru = {
     path: "Путь",
     help: "Помощь",
     structural: "Структура",
+    feature: "Карта функций",
     domain: "Домен",
   },
   domainView: {

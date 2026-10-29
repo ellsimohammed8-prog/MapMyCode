@@ -120,6 +120,7 @@ export const ar = {
     path: "المسار",
     help: "مساعدة",
     structural: "هيكلي",
+    feature: "خريطة الوظائف",
     domain: "مجال",
   },
   domainView: {

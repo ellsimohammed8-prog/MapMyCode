@@ -120,6 +120,7 @@ export const zh = {
     path: "路径",
     help: "帮助",
     structural: "结构",
+    feature: "功能地图",
     domain: "领域",
   },
   domainView: {

@@ -120,6 +120,7 @@ export const ja = {
     path: "パス",
     help: "ヘルプ",
     structural: "構造",
+    feature: "機能マップ",
     domain: "ドメイン",
   },
   domainView: {

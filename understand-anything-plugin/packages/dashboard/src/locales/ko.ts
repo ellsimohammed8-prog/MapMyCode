@@ -120,6 +120,7 @@ export const ko = {
     path: "경로",
     help: "도움말",
     structural: "구조",
+    feature: "기능 지도",
     domain: "도메인",
   },
   domainView: {

@@ -120,6 +120,7 @@ export const en = {
     path: "Path",
     help: "Help",
     structural: "Structural",
+    feature: "Feature map",
     domain: "Domain",
   },
   domainView: {

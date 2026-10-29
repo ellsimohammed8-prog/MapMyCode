@@ -80,7 +80,7 @@ export default function MobileDrawer({
   }, [open]);
 
   const filterDefs = isKnowledgeGraph ? knowledgeFilters : structuralFilters;
-  const showViewToggle = Boolean(graph && !isKnowledgeGraph && domainGraph);
+  const showViewToggle = Boolean(graph && !isKnowledgeGraph);
 
   return (
     <div
@@ -144,16 +144,29 @@ export default function MobileDrawer({
             <section>
               <SectionLabel>{t.drawer.view}</SectionLabel>
               <div className="inline-flex items-center bg-elevated rounded-lg p-0.5">
+                {domainGraph && (
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("domain")}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                      viewMode === "domain"
+                        ? "bg-accent/20 text-accent"
+                        : "text-text-muted hover:text-text-secondary"
+                    }`}
+                  >
+                    {t.drawer.domain}
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => setViewMode("domain")}
+                  onClick={() => setViewMode("feature")}
                   className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                    viewMode === "domain"
+                    viewMode === "feature"
                       ? "bg-accent/20 text-accent"
                       : "text-text-muted hover:text-text-secondary"
                   }`}
                 >
-                  {t.drawer.domain}
+                  📦 {t.drawer.feature}
                 </button>
                 <button
                   type="button"
@@ -164,7 +177,7 @@ export default function MobileDrawer({
                       : "text-text-muted hover:text-text-secondary"
                   }`}
                 >
-                  {t.drawer.structural}
+                  🕸️ {t.drawer.structural}
                 </button>
               </div>
             </section>

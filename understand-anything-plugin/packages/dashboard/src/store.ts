@@ -14,7 +14,7 @@ export type NavigationLevel = "overview" | "layer-detail";
 export type NodeType = "file" | "function" | "class" | "module" | "concept" | "config" | "document" | "service" | "table" | "endpoint" | "pipeline" | "schema" | "resource" | "domain" | "flow" | "step" | "article" | "entity" | "topic" | "claim" | "source" | "page" | "screen" | "component" | "componentSet" | "instance" | "token";
 export type Complexity = "simple" | "moderate" | "complex";
 export type EdgeCategory = "structural" | "behavioral" | "data-flow" | "dependencies" | "semantic" | "infrastructure" | "domain" | "knowledge" | "design";
-export type ViewMode = "structural" | "domain" | "knowledge";
+export type ViewMode = "structural" | "domain" | "knowledge" | "feature";
 export type DetailLevel = "file" | "class";
 
 export interface FilterState {
@@ -377,6 +377,9 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
     const { viewMode, domainGraph, activeDomainId } = get();
     // Preserve domain view if a domain graph is already loaded
     const keepDomainView = viewMode === "domain" && domainGraph !== null;
+    // Preserve the feature map too, so reloading a graph never kicks the
+    // ordinary person back to the technical graph.
+    const keepFeatureView = viewMode === "feature";
     const { nodesById, nodeIdToLayerId, nodeIdToLayerIds } = buildGraphIndexes(graph);
     set({
       graph,
@@ -390,7 +393,7 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
       selectedNodeId: null,
       focusNodeId: null,
       nodeHistory: [],
-      viewMode: keepDomainView ? "domain" as const : "structural" as const,
+      viewMode: keepDomainView ? "domain" as const : keepFeatureView ? "feature" as const : "structural" as const,
       activeDomainId: keepDomainView ? activeDomainId : null,
       containerLayoutCache: new Map(),
       expandedContainers: new Set(),
@@ -552,14 +555,23 @@ export const useDashboardStore = create<DashboardStore>()((set, get) => ({
   },
 
   setPersona: (persona) =>
-    set({
+    set((state) => ({
       persona,
+      // The ordinary person lands on the feature map; technical personas
+      // land on the graph. Specialty views (domain/knowledge) are explicit
+      // choices and are left alone.
+      viewMode:
+        state.viewMode === "domain" || state.viewMode === "knowledge"
+          ? state.viewMode
+          : persona === "non-technical"
+            ? "feature"
+            : "structural",
       // Persona changes filter node types, which shifts container.nodeIds.
       containerLayoutCache: new Map(),
       containerSizeMemory: new Map(),
       expandedContainers: new Set(),
       pendingFocusContainer: null,
-    }),
+    })),
 
   openCodeViewer: (nodeId) =>
     set({ codeViewerOpen: true, codeViewerNodeId: nodeId, codeViewerExpanded: false }),

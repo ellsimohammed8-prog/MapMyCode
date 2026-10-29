@@ -5,6 +5,7 @@ import { useDashboardStore } from "./store";
 import GraphView from "./components/GraphView";
 import DomainGraphView from "./components/DomainGraphView";
 import KnowledgeGraphView from "./components/KnowledgeGraphView";
+import FeaturesView from "./components/FeaturesView";
 import SearchBar from "./components/SearchBar";
 import NodeInfo from "./components/NodeInfo";
 import LayerLegend from "./components/LayerLegend";
@@ -506,21 +507,35 @@ function DashboardContent({
           </h1>
           <div className="w-px h-5 bg-border-subtle hidden sm:block" />
           <PersonaSelector />
-          {graph && !isKnowledgeGraph && domainGraph && (
+          {graph && !isKnowledgeGraph && (
             <>
               <div className="w-px h-5 bg-border-subtle" />
               <div className="flex items-center bg-elevated rounded-lg p-0.5">
+                {domainGraph && (
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("domain")}
+                    title={t.drawer.domain}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                      viewMode === "domain"
+                        ? "bg-accent/20 text-accent"
+                        : "text-text-muted hover:text-text-secondary"
+                    }`}
+                  >
+                    {t.drawer.domain}
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => setViewMode("domain")}
-                  title={t.drawer.domain}
+                  onClick={() => setViewMode("feature")}
+                  title={t.drawer.feature}
                   className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                    viewMode === "domain"
+                    viewMode === "feature"
                       ? "bg-accent/20 text-accent"
                       : "text-text-muted hover:text-text-secondary"
                   }`}
                 >
-                  {t.drawer.domain}
+                  📦 {t.drawer.feature}
                 </button>
                 <button
                   type="button"
@@ -532,7 +547,7 @@ function DashboardContent({
                       : "text-text-muted hover:text-text-secondary"
                   }`}
                 >
-                  {t.drawer.structural}
+                  🕸️ {t.drawer.structural}
                 </button>
               </div>
             </>
@@ -544,7 +559,7 @@ function DashboardContent({
           <div className="flex items-center gap-4 w-max">
             <DiffToggle />
             {/* Detail level: file view (architecture) / class view (code structure) */}
-            {!isKnowledgeGraph && viewMode !== "domain" && (
+            {!isKnowledgeGraph && viewMode !== "domain" && viewMode !== "feature" && (
               <>
                 <div className="w-px h-5 bg-border-subtle" />
                 <div className="flex items-center bg-elevated rounded-lg p-0.5">
@@ -697,6 +712,8 @@ function DashboardContent({
         <div className="flex-1 min-w-0 min-h-0 relative">
           {viewMode === "knowledge" ? (
             <KnowledgeGraphView />
+          ) : viewMode === "feature" ? (
+            <FeaturesView />
           ) : viewMode === "domain" && domainGraph ? (
             <DomainGraphView />
           ) : (
