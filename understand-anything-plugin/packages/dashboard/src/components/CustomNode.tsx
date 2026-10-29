@@ -71,11 +71,21 @@ const complexityColors: Record<string, string> = {
   complex: "text-[#c97070]",
 };
 
+// Risk colors keyed by riskLevel — same hexes as the NodeInfo badge, so the
+// map and the card always agree. An unknown or absent value yields no color:
+// the node keeps its default subtle border and no dot.
+const riskColors: Record<string, string> = {
+  green: "#7fb98a",
+  yellow: "#d8a94e",
+  red: "#c97070",
+};
+
 export interface CustomNodeData extends Record<string, unknown> {
   label: string;
   nodeType: string;
   summary: string;
   complexity: string;
+  riskLevel?: string;
   isHighlighted: boolean;
   searchScore?: number;
   isSelected: boolean;
@@ -101,6 +111,15 @@ function CustomNodeComponent({
   const barColor = typeColors[knownType] ?? typeColors.file;
   const textColor = typeTextColors[knownType] ?? typeTextColors.file;
   const complexityColor = complexityColors[data.complexity] ?? complexityColors.simple;
+  const riskColor = data.riskLevel ? riskColors[data.riskLevel] : undefined;
+  const riskLabel =
+    data.riskLevel === "green"
+      ? t.nodeInfo.riskSafe
+      : data.riskLevel === "yellow"
+        ? t.nodeInfo.riskCaution
+        : data.riskLevel === "red"
+          ? t.nodeInfo.riskDanger
+          : null;
   const { t } = useI18n();
 
   if (import.meta.env.DEV && !(knownType in typeColors)) {
@@ -146,6 +165,7 @@ function CustomNodeComponent({
   return (
     <div
       className={`relative rounded-lg bg-elevated border border-border-subtle ${extraClass} min-w-[180px] max-w-[220px] overflow-hidden transition-[box-shadow,outline,opacity,filter] duration-200 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.3)]`}
+      style={riskColor ? { borderColor: riskColor } : undefined}
       onClick={() => data.onNodeClick?.(id)}
     >
       {/* Left color bar */}
@@ -169,6 +189,15 @@ function CustomNodeComponent({
             <span className={`text-[9px] font-mono ${complexityColor}`}>
               {data.complexity}
             </span>
+            {riskColor && riskLabel && (
+              <span
+                className="inline-block w-2 h-2 rounded-full"
+                style={{ backgroundColor: riskColor }}
+                role="img"
+                aria-label={riskLabel}
+                title={riskLabel}
+              />
+            )}
             {data.tags?.includes("tested") && (
               <span
                 className="inline-block w-1.5 h-1.5 rounded-full bg-node-function shadow-[0_0_4px_rgba(90,158,111,0.6)]"
