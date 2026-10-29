@@ -91,6 +91,11 @@ export const ja = {
     otherFiles: "その他のファイル",
     noTour: "このグラフにはまだジャーニーのステップがありません — すべてのファイルは以下にレイヤー別に表示されます。",
   },
+  intentBox: {
+    placeholder: "変更したいことは…",
+    noResults: "その説明に一致するファイルはまだありません — 別の言葉で試してください。",
+    copyPrompt: "安全な指示をコピー",
+  },
   personaSelector: {
     overview: "概要",
     overviewDesc: "高レベルアーキテクチャビュー",

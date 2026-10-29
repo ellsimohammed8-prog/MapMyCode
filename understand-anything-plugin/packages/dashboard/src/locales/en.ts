@@ -91,6 +91,11 @@ export const en = {
     otherFiles: "Other files",
     noTour: "No journey steps in this graph yet — every file is listed below, grouped by layer.",
   },
+  intentBox: {
+    placeholder: "I want to change…",
+    noResults: "No file matches that description yet — try other words.",
+    copyPrompt: "Copy safe prompt",
+  },
   personaSelector: {
     overview: "Overview",
     overviewDesc: "High-level architecture view",

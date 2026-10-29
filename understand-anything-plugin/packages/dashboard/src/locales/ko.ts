@@ -91,6 +91,11 @@ export const ko = {
     otherFiles: "기타 파일",
     noTour: "이 그래프에는 아직 여정 단계가 없습니다 — 모든 파일이 아래에 레이어별로 표시됩니다.",
   },
+  intentBox: {
+    placeholder: "바꾸고 싶은 것은…",
+    noResults: "해당 설명과 일치하는 파일이 아직 없습니다 — 다른 단어로 시도해 보세요.",
+    copyPrompt: "안전 지침 복사",
+  },
   personaSelector: {
     overview: "개요",
     overviewDesc: "고수준 아키텍처 뷰",

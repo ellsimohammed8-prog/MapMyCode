@@ -91,6 +91,11 @@ export const vi = {
     otherFiles: "Tệp khác",
     noTour: "Đồ thị này chưa có bước hành trình — mọi tệp đều được liệt kê bên dưới, nhóm theo lớp.",
   },
+  intentBox: {
+    placeholder: "Tôi muốn thay đổi…",
+    noResults: "Chưa có tệp nào khớp với mô tả — hãy thử từ khác.",
+    copyPrompt: "Sao chép hướng dẫn an toàn",
+  },
   personaSelector: {
     overview: "Tổng quan",
     overviewDesc: "Góc nhìn kiến trúc tổng thể",

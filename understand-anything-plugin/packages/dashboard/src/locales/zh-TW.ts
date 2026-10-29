@@ -91,6 +91,11 @@ export const zhTW = {
     otherFiles: "其他檔案",
     noTour: "此圖譜尚無旅程步驟 — 所有檔案已在下方按層分組列出。",
   },
+  intentBox: {
+    placeholder: "我想改…",
+    noResults: "暫無檔案符合該描述 — 請換個詞試試。",
+    copyPrompt: "複製安全指令",
+  },
   personaSelector: {
     overview: "概覽",
     overviewDesc: "高層次架構視圖",

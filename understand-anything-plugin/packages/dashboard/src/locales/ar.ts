@@ -91,6 +91,11 @@ export const ar = {
     otherFiles: "ملفات أخرى",
     noTour: "لا توجد خطوات رحلة في هذا الرسم بعد — كل الملفات مذكورة أسفله، مقسمة حسب الطبقة.",
   },
+  intentBox: {
+    placeholder: "أنا باغي نغير...",
+    noResults: "حتى ملف ما طابق هاد الوصف — جرّب كلمات أخرى.",
+    copyPrompt: "نسخ الأمر الآمن",
+  },
   personaSelector: {
     overview: "نظرة عامة",
     overviewDesc: "عرض معماري عالي المستوى",

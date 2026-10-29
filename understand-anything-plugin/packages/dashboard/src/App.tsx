@@ -7,6 +7,7 @@ import DomainGraphView from "./components/DomainGraphView";
 import KnowledgeGraphView from "./components/KnowledgeGraphView";
 import FeaturesView from "./components/FeaturesView";
 import SearchBar from "./components/SearchBar";
+import IntentBox from "./components/IntentBox";
 import NodeInfo from "./components/NodeInfo";
 import LayerLegend from "./components/LayerLegend";
 import DiffToggle from "./components/DiffToggle";
@@ -690,6 +691,7 @@ function DashboardContent({
 
       {/* Search */}
       <SearchBar />
+      <IntentBox />
 
       {/* Graph freshness warning banner */}
       {!loadError && <StalenessBanner freshness={graphFreshness} />}

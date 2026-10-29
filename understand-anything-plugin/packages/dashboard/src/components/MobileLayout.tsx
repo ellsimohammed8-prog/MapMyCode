@@ -7,6 +7,7 @@ import DomainGraphView from "./DomainGraphView";
 import KnowledgeGraphView from "./KnowledgeGraphView";
 import FeaturesView from "./FeaturesView";
 import SearchBar from "./SearchBar";
+import IntentBox from "./IntentBox";
 import NodeInfo from "./NodeInfo";
 import ProjectOverview from "./ProjectOverview";
 import FileExplorer from "./FileExplorer";
@@ -134,7 +135,12 @@ export default function MobileLayout({
       </header>
 
       {/* Search (collapsible) */}
-      {searchOpen && <SearchBar />}
+      {searchOpen && (
+        <>
+          <SearchBar />
+          <IntentBox />
+        </>
+      )}
 
       {/* Graph freshness warning */}
       {!loadError && <StalenessBanner freshness={graphFreshness} />}

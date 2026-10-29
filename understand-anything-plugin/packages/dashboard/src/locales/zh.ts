@@ -91,6 +91,11 @@ export const zh = {
     otherFiles: "其他文件",
     noTour: "此图谱暂无旅程步骤 — 所有文件已在下方按层分组列出。",
   },
+  intentBox: {
+    placeholder: "我想改…",
+    noResults: "暂无文件匹配该描述 — 请换个词试试。",
+    copyPrompt: "复制安全指令",
+  },
   personaSelector: {
     overview: "概览",
     overviewDesc: "高层次架构视图",
