@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paperclip Mind Map — The New Way</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; background: #0b1220; color: #e5e7eb; }
+  header { padding: 14px 18px 10px; border-bottom: 1px solid #1f2937; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  header p { margin: 0; color: #9ca3af; font-size: 14px; line-height: 1.7; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 18px; border-bottom: 1px solid #1f2937; align-items: center; }
+  .toolbar input { background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 8px; padding: 8px 12px; min-width: 220px; font-size: 14px; }
+  .chip { background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 20px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  .chip.active { background: #e5e7eb; color: #111827; border-color: #e5e7eb; font-weight: bold; }
+  .tbtn { background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  .main { display: flex; height: 72vh; min-height: 560px; }
+  .panel { width: 340px; flex-shrink: 0; border-right: 1px solid #1f2937; background: #0f172a; padding: 16px; overflow-y: auto; }
+  .panel h2 { margin: 0 0 6px; font-size: 18px; }
+  .panel .real { direction: ltr; text-align: left; color: #facc15; font-family: monospace; font-size: 12px; margin-bottom: 10px; word-break: break-all; }
+  .panel p { color: #cbd5e1; line-height: 1.8; font-size: 14px; }
+  .panel .cons { background: rgba(201,112,112,0.10); border: 1px solid rgba(201,112,112,0.40); border-radius: 8px; padding: 10px 12px; }
+  .panel button.copy { background: #f59e0b; color: #111827; border: none; border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: 8px; }
+  .panel .nbtn { display: block; width: 100%; text-align: left; background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 8px; padding: 8px 10px; margin: 4px 0; cursor: pointer; font-size: 13px; }
+  .panel .nbtn:hover { border-color: #facc15; }
+  .map-wrap { flex: 1; overflow: hidden; position: relative; background: #0b1220; cursor: grab; touch-action: none; }
+  .map-wrap:active { cursor: grabbing; }
+  .map-wrap svg { width: 100%; height: 100%; display: block; }
+  .node-g { cursor: pointer; }
+  .node-g text { pointer-events: none; }
+  .node-label { font-size: 13px; font-weight: bold; fill: #f9fafb; text-anchor: middle; }
+  .node-sub { font-size: 11px; fill: #9ca3af; text-anchor: middle; }
+  .edge { fill: none; stroke: #475569; stroke-width: 1.5; }
+  .edge.hub { stroke-dasharray: 4 4; }
+  .edge.cross { stroke: #64748b; }
+  .edge.hl { stroke: #facc15; stroke-width: 2.5; }
+  .edge-label { font-size: 12px; fill: #cbd5e1; text-anchor: middle; paint-order: stroke; stroke: #0b1220; stroke-width: 4px; }
+  .node-g.dim, .edge.dim, .edge-label.dim { opacity: 0.15; }
+  .tbtn.active { background: #e5e7eb; color: #111827; font-weight: bold; }
+  .node-g.marked circle { stroke: #facc15; stroke-width: 5; }
+  .node-g .mark-badge { font-size: 15px; text-anchor: middle; pointer-events: none; display: none; }
+  .node-g.marked .mark-badge { display: block; }
+  #tour { margin: 0; border-top: 1px solid #1f2937; padding: 12px 18px; background: #0f172a; }
+  #tour h2 { margin: 0 0 8px; font-size: 16px; }
+  #tour .phase { color: #cbd5e1; line-height: 1.8; font-size: 14px; }
+  #tour .alert { background: rgba(201,112,112,0.10); border: 1px solid rgba(201,112,112,0.40); border-radius: 8px; padding: 10px 12px; margin-top: 10px; font-size: 13px; line-height: 1.8; }
+  .tour-nav { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .tour-nav button { background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+  .tour-nav button:disabled { opacity: 0.4; cursor: default; }
+  .tour-nav button.go { background: #f59e0b; color: #111827; border-color: #f59e0b; font-weight: bold; }
+  .ndots { display: flex; gap: 6px; margin: 0 auto; }
+  .ndots button { width: 10px; height: 10px; border-radius: 50%; padding: 0; background: #374151; border: none; cursor: pointer; }
+  .ndots button.cur { background: #f59e0b; }
+  .legend { padding: 10px 18px; color: #9ca3af; font-size: 13px; line-height: 1.8; border-top: 1px solid #1f2937; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 4px; vertical-align: middle; }
+  footer { padding: 12px 18px 30px; color: #9ca3af; font-size: 13px; line-height: 1.9; }
+  footer b { color: #e5e7eb; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Paperclip Mind Map</h1>
+  <p>37 nodes (Paperclip + 6 branches + 30 modules) • 64 links • 4 journeys — drag the background to move, mouse wheel to zoom, drag any node to move it, click any node to see what it is, what it does, and what stops if it falls. Dashed lines = grouping (a branch groups its modules); solid lines = a real relation (this uses this, this records in this).</p>
+</header>
+<div class="toolbar">
+  <input id="search" type="text" placeholder="Search: e.g. database or Google Sheets...">
+  <button class="chip risk active" data-risk="all">All</button>
+  <button class="chip risk" data-risk="safe">🟢 Safe only</button>
+  <button class="chip risk" data-risk="sensitive">🔴🟡 Sensitive</button>
+  <button class="tbtn" id="resetBtn">↺ Rearrange map</button>
+  <button class="tbtn" id="fitBtn">⛶ Show all</button>
+  <button class="tbtn" id="markBtn">🔧 Mark places to modify</button>
+  <button class="chip" id="markCount" style="display:none"></button>
+</div>
+<div class="main">
+  <div class="panel" id="panel"></div>
+  <div class="map-wrap" id="wrap"><svg id="svg"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker><marker id="arr-hl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15"/></marker></defs><g id="vp"></g></svg></div>
+</div>
+<section id="tour">
+  <h2>🎬 Story Tour: The User Journey</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+    <button class="chip flow active" data-flow="0">First run & setup</button>
+    <button class="chip flow" data-flow="1">Task & approval (daily work)</button>
+    <button class="chip flow" data-flow="2">Connect an external tool</button>
+    <button class="chip flow" data-flow="3">Delegate from an external assistant</button>
+    <button class="chip" id="exitTour" style="display:none">✕ Exit tour</button>
+  </div>
+  <div class="phase" id="phaseText"></div>
+  <div id="phaseAlert"></div>
+  <div class="tour-nav">
+    <button id="prevBtn">Previous</button>
+    <div class="ndots" id="dots"></div>
+    <button id="nextBtn" class="go">Next</button>
+  </div>
+</section>
+<div class="legend"><span class="dot" style="background:#7fb98a"></span> Safe — you can change it without fear &nbsp; <span class="dot" style="background:#d8a94e"></span> Affects screens &nbsp; <span class="dot" style="background:#c97070"></span> Very sensitive — touching it can break core features &nbsp; <span style="color:#facc15">●</span> Paperclip &nbsp; <span style="color:#f59e0b">●</span> Function branch</div>
+<footer>
+  <b>Honesty notes:</b><br>
+  • This map was built by applying the new method manually to Paperclip's code (same as the October 26 map), not by running the plugin itself inside a coding tool.<br>
+  • Solid links and their labels (uses, records in, launches...) are my reading of code relations from the three analysis reports — the facts are from the reports, the linking is interpretive.<br>
+  • The <span dir="ltr">server</span> and <span dir="ltr">ui</span> nodes were added by me directly from reading those folders, because the analysis slices did not cover them.<br>
+  • Developer-only tools are shown green by declared convention: breaking them stops nothing for the user.<br>
+  • The <span dir="ltr">plugin-llm-wiki</span> red rating was a close call and stayed red under the rule "when torn, pick the higher level".<br>
+  • The four missing features (Arabic UI, workflow builder, ads, Drive approval) are not existing code — your build list still stands.
+</footer>
+<script>
+const RISK = { green: ["#7fb98a", "Safe — you can change it without fear for the app"], yellow: ["#d8a94e", "Affects screens and user interaction"], red: ["#c97070", "Very sensitive — touching it can break core features"] };
+const NODES = [
+  { id: "ui", name: "ui", plain: "Control Board", box: "interface", what: "The screens the user sees in the browser: companies, agents, tasks, approvals, and the setup wizard.", role: "Its role is to let the user see and manage everything from the browser, with no commands.", cons: "If it falls, the user can see and manage nothing from the browser, but running agents and the server keep working from the terminal.", risk: "yellow", safe: "Change only the screen you need, keep route names and API calls as they are, then open the changed screen and check it looks right before saving." },
+  { id: "cli", name: "cli", plain: "Terminal Control", box: "interface", what: "The command-line tool that lets the user run Paperclip from the terminal by typing: first setup, run, health check, and managing agents, tasks, approvals, and backups.", role: "Its role is to give the user full control from the terminal, without opening the board in the browser.", cons: "If it breaks, the user cannot manage the app from the terminal (setup, run, backup), but the browser board and running agents keep working.", risk: "yellow", safe: "Change only the command you need, keep command names and options as they are, then try the command in the terminal and check its result is correct before saving." },
+  { id: "workspace-diff", name: "packages/plugins/plugin-workspace-diff", plain: "Changes Tab", box: "interface", what: "The Changes tab that shows what changed inside the agent's workspace during execution.", role: "Its role is to show the changes the agent made in the workspace so the user can see and review what changed before accepting.", cons: "If it falls, the changes tab goes empty or disappears, and the user can no longer see what the agent changed in the workspace.", risk: "yellow", safe: "Change only the part you need, keep the diff model and workspace-data reading as they are, then check that the changes tab shows a real change before saving." },
+  { id: "server", name: "server", plain: "Main Server", box: "server", what: "The brain that runs the app from behind: it receives requests from the board, handles login and permissions, and moves agents, tasks, and approvals.", role: "Its role is to connect the board, the database, and the agents: every click on the board passes through here.", cons: "If it falls, the board becomes useless: no login, no tasks, no approvals, and agents receive no orders.", risk: "red", safe: "Change only the route or function you need, keep API contracts and the login system as they are, then try a login and a full task before saving." },
+  { id: "db", name: "packages/db", plain: "Data Vault", box: "server", what: "The place where everything is recorded: agents, tasks, approvals, budgets, costs, and companies, with the rules that organize these records.", role: "Its role is to save the app's full memory: without this part, the app remembers nothing from day to day.", cons: "If it breaks, the app cannot open, record, or read any information, and agents, tasks, and approvals all become unreachable.", risk: "red", safe: "Change only the table or migration you need, touch no other table and delete no existing column, then check that the migration applies to a trial copy without data loss before saving." },
+  { id: "shared", name: "packages/shared", plain: "Shared Toolbox", box: "server", what: "The store of shared tools and rules used by the server, the adapters, and the terminal tool: connection definitions for Gmail, Drive, Slack, and GitHub, login rules, accounts, and many helper tools.", role: "Its role is that all parts of the app speak the same language and use the same rules, instead of each part inventing its own tools.", cons: "If it breaks, the server and adapters cannot work, agents lose their connection to Gmail and Drive, and the whole app can stop.", risk: "red", safe: "Change only the part you need, keep exported function names and rules as they are, then check that the server and adapters still work before saving." },
+  { id: "runner", name: "packages/paperclip-runner", plain: "Agent Runner", box: "engine", what: "The engine that launches and supervises coding agents (Claude, Codex, and others) and keeps the connection with them even if it drops.", role: "Its role is to actually run agents: launching, supervising processes, and constant communication with the server — without it, no agent works.", cons: "If it falls, all agents stop: no session launches, no reply arrives, and pending tasks stall completely.", risk: "red", safe: "Change only the part you need, keep the run protocol, exported function names, and compatibility limits as they are, then check that a full agent session works from launch to finish before saving." },
+  { id: "adapters", name: "packages/adapters", plain: "Agent Engines", box: "engine", what: "The set of engines that connect Paperclip to different AI tools: Claude Code, Codex, Cursor, Gemini, OpenCode, and others, so each agent works with its own tool.", role: "Its role is to actually run agents: it gives the agent its tool and lets it execute tasks.", cons: "If it breaks, agents cannot work at all: tasks stay stuck with no execution, even if the control board itself works.", risk: "red", safe: "Change only the one engine you need, keep the run contract with the rest of the app as it is, then try a small real task with that engine before saving." },
+  { id: "adapter-utils", name: "packages/adapter-utils", plain: "Run Toolkit", box: "engine", what: "The toolkit that helps engines run agents safely: launching processes, isolation inside a Sandbox, file sync, and hiding secrets from logs.", role: "Its role is that agents work in an isolated, safe environment, their files sync without loss, and login secrets never appear in logs.", cons: "If it breaks, agents cannot start their work or their files do not sync, and the biggest danger is that login secrets could appear in logs if the secret-hiding part breaks.", risk: "red", safe: "Change only the function you need, never touch secret-hiding code or isolation limits, then check that secrets are still hidden from logs before saving." },
+  { id: "sp-cloudflare", name: "packages/plugins/sandbox-providers/cloudflare", plain: "Cloudflare Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at Cloudflare so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at Cloudflare — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on Cloudflare: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at Cloudflare books and runs a command before saving." },
+  { id: "sp-createos", name: "packages/plugins/sandbox-providers/createos", plain: "CreateOS Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at CreateOS through its public API so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at CreateOS — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on CreateOS: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at CreateOS books and runs a command before saving." },
+  { id: "sp-daytona", name: "packages/plugins/sandbox-providers/daytona", plain: "Daytona Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at Daytona so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at Daytona — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on Daytona: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at Daytona books and runs a command before saving." },
+  { id: "sp-e2b", name: "packages/plugins/sandbox-providers/e2b", plain: "E2B Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at E2B so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at E2B — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on E2B: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at E2B books and runs a command before saving." },
+  { id: "sp-exedev", name: "packages/plugins/sandbox-providers/exe-dev", plain: "exe.dev Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at exe.dev so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at exe.dev — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on exe.dev: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at exe.dev books and runs a command before saving." },
+  { id: "sp-k8s", name: "packages/plugins/sandbox-providers/kubernetes", plain: "Kubernetes Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes inside your own Kubernetes clusters so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands inside Kubernetes — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on Kubernetes: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox on Kubernetes books and runs a command before saving." },
+  { id: "sp-modal", name: "packages/plugins/sandbox-providers/modal", plain: "Modal Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at Modal so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at Modal — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on Modal: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at Modal books and runs a command before saving." },
+  { id: "sp-novita", name: "packages/plugins/sandbox-providers/novita", plain: "Novita Sandbox Provider", box: "engine", what: "The provider that books and launches Remote Sandboxes at Novita so the agent works there instead of on your machine.", role: "Its role is to provide a safe, remote place for the agent to work: booking, launching, and running commands at Novita — without it, the agent has nowhere to work except on your machine.", cons: "If it falls, agents stop working on Novita: booking and launching break, and tasks needing a remote Sandbox stop until it is fixed or the provider is changed.", risk: "red", safe: "Change only the part you need, keep the provider interface and the booking/running method as they are, then check that a trial Sandbox at Novita books and runs a command before saving." },
+  { id: "mcp-server", name: "packages/mcp-server", plain: "MCP Tools Gateway", box: "external", what: "A gateway that gives agents ready tools over the MCP protocol so they can read and change cases, approvals, and documents through Paperclip's interface.", role: "Its role is translation between agents and Paperclip: the agent asks for a tool, and the gateway runs it through the REST interface using the login key.", cons: "If it falls or its key leaks, agents lose all their tools (reading, writing, approvals), and anyone with the key can change cases and approvals.", risk: "red", safe: "Change only the part you need, keep key reading from environment variables and the allowed-tools list as they are, then check that a read tool and a write tool work with a test key before saving." },
+  { id: "sheets", name: "packages/google-sheets-mcp-server", plain: "Google Sheets Server", box: "external", what: "A small translator standing between Paperclip agents and real Google Sheets, giving them 9 tools: reading sheets and searching rows, adding rows, editing values, opening new tabs, clearing values, and deleting rows.", role: "Its role in the app is to let the agent read and write in real company Google Sheets, under one strict condition: it touches only sheets on a pre-written allowed list, and it rejects any sheet outside the list before contacting Google.", cons: "If this server breaks, the agent fully stops reading Google Sheets and writing in them, and any task depending on a sheet (for example updating a tracking sheet) stays stuck; and if the allowed-list rule is broken, the agent could reach a sheet it was not allowed to touch.", risk: "red", safe: "Change only the tools' interface or messages, keep the allowed-list check before every Google call and the nine tool names as they are, then try reading and writing in a trial sheet before saving." },
+  { id: "kv-demo", name: "packages/kv-demo-mcp-server", plain: "Demo Display Board", box: "external", what: "A small demo program for trials only: it gives 4 simple tools (show all values, read a value, save a value, delete a value) with a small web page showing values in a table that refreshes every two seconds, and everything lives in temporary memory that is lost when the program stops.", role: "Its role in the app is to be a live example showing the operator how the tools policy works: the agent calls a tool, and the value appears at once on the display page, while Paperclip records the call, the approvals, and the audit log; it is a teaching and display tool, not part of real company work.", cons: "If it breaks, only the demo display stops: the values page stays empty or stops refreshing, and the four display tools do not answer; but no real data is lost because this program saves nothing at all, and real Paperclip companies are not affected.", risk: "yellow", safe: "Change only the display page shape or tool texts, keep the four tool names and the shared temporary memory between tools and page, then run the program, call the save tool, and check the value appeared on the page before saving." },
+  { id: "integrations", name: "integrations/assistant-plugins", plain: "External Assistants Bridge", box: "external", what: "A set of ready packages that connect Paperclip to ChatGPT/Codex and Claude assistants, with three written skills: delegating work, following up results, and team review.", role: "Its role is to open a watched door through which the external assistant enters a Paperclip company: the user approves read or write permission, and the assistant can delegate a task, follow up its result, or review the team from inside ChatGPT or Claude instead of the Paperclip board.", cons: "If it breaks, delegating work from ChatGPT and Claude fully stops and no new task arrives from outside; and if the written permissions change by mistake, an external assistant could get write permission the user did not approve, or lose one it needs.", risk: "red", safe: "Change only the three skills' texts or the package description, never touch the requested permissions, the MCP server link, or the approval method, put no key or password inside package files, then rebuild and try delegating from an external assistant before saving." },
+  { id: "sdk", name: "packages/plugins/sdk", plain: "Plugin Build Kit", box: "plugins", what: "The official kit anyone uses to build a plugin for Paperclip, with interface templates, hooks, and test tools.", role: "Its role is to unify how plugins are built so any plugin works with Paperclip without its author reinventing the wheel.", cons: "If it breaks, plugins built on it break or cannot be built, meaning plugin features stop for the user.", risk: "yellow", safe: "Change only the part you need, keep public function names and hooks as they are, then check that a trial plugin builds and works before saving." },
+  { id: "llm-wiki", name: "packages/plugins/plugin-llm-wiki", plain: "Smart Wiki Plugin", box: "plugins", what: "A plugin that gathers knowledge from code, cases, and documents and organizes it into searchable, readable wiki pages.", role: "Its role is to turn scattered knowledge (code, cases, documents) into an organized wiki that answers team questions and stays updated.", cons: "If it falls or its writing breaks, wiki pages stop updating or lose information, and knowledge search returns incomplete results.", risk: "red", safe: "Change only the part you need, keep database migrations, page-writing rules, and link protection as they are, then check that a wiki page writes and reads without loss before saving." },
+  { id: "fake-sandbox", name: "packages/plugins/paperclip-plugin-fake-sandbox", plain: "Fake Sandbox for Tests", box: "plugins", what: "A fake Sandbox with fixed results, used only in tests and development instead of a real Sandbox.", role: "Its role is to play the real Sandbox in tests so developers can try without paying or waiting for a remote service.", cons: "If it falls, nothing stops for the user — only developer tests using the fake Sandbox fail.", risk: "green", safe: "Change only the part you need, keep the fixed behavior and provider interface as they are, then check that fake-Sandbox tests pass before saving." },
+  { id: "create-plugin", name: "packages/plugins/create-paperclip-plugin", plain: "New Plugin Creator", box: "plugins", what: "A command-line tool that generates the structure of a new plugin ready from a template.", role: "Its role is to speed up starting any new plugin: it gives you ready files and templates instead of starting from zero.", cons: "If it falls, nothing stops for the user — only creating a new plugin for developers stalls.", risk: "green", safe: "Change only the part you need, keep templates and generated file names as they are, then check that a new plugin generates and builds before saving." },
+  { id: "eval-kernel", name: "packages/paperclip-eval-kernel", plain: "Evaluation Test Engine", box: "devdocs", what: "A developers-only tool that organizes evaluation tests: it tries scenarios on different agents and gathers results and scores in one table.", role: "Its role is to check agent quality before relying on them: it compares their performance on the same scenarios to show who is best.", cons: "If it falls, nothing stops for the user — only developer evaluation tests stall.", risk: "green", safe: "Change only the part you need, keep the results-matrix shape and compatibility check as they are, then check that a small evaluation matrix produces correct results before saving." },
+  { id: "evals", name: "evals", plain: "Agent Quality Lab", box: "devdocs", what: "A test framework that measures agent behavior across different models and prompt versions, with special cases for MCP tool-gateway behavior.", role: "Its role in the project is to give the team a quality score: does the agent behave as it should or not, before any change reaches users.", cons: "If it breaks, no user screen stops and no data is lost; only quality reports stop, leaving the team blind to agent behavior regressions after changes.", risk: "green", safe: "Change only test cases or prompts, keep config file names as they are, then run a quick validation check before saving." },
+  { id: "maps", name: "maps", plain: "Capability Map", box: "devdocs", what: "A set of written recipes describing what a human can do in Paperclip, from where, and how to verify it, from two angles: the features map (what the user sees) and the agent-access map (interfaces and permissions for the same capabilities with the same IDs).", role: "Its role in the project is to be the verification reference: before fixing a bug or changing behavior, the team returns to it to know which screens and capabilities the fix must cover; it grants no permissions and changes no program behavior by itself.", cons: "If it changes or is deleted, nothing stops for the user and no screen breaks; what is lost is only the verification reference, leaving the team with no map of what to test after each change.", risk: "green", safe: "Change only the recipe text or capability ID, keep file names and keys as they are because changing them changes IDs, then run the maps check before saving." },
+  { id: "doc", name: "doc", plain: "Internal Project Docs", box: "devdocs", what: "The internal operational and product documents: goal, product definition, build contract, development, database, deployment, and governance guides such as MCP tool-access governance and the demo scenario.", role: "Its role is to be the reference for whoever builds and runs Paperclip: what the product is, what contract any change must match, and how it is deployed and managed.", cons: "If it changes or is deleted, the app does not stop and no data is lost; what is lost is the reference developers rely on, leaving builds without a clear contract.", risk: "green", safe: "Add or correct texts only, do not replace a full strategy document at once, and keep the implementation document matching real behavior before saving." },
+  { id: "docs", name: "docs", plain: "Published Docs Site", box: "devdocs", what: "The official published documentation site for readers, with quick start, core concepts, guides, and references — the readable interface from which a new user learns.", role: "Its role is to teach the user: how to run Paperclip in minutes, what a company, agent, and task are, and how to use each part, before touching the control board.", cons: "If it breaks, the Paperclip app itself keeps working, but a new reader loses the starting guide and does not know where to begin or how to use features.", risk: "green", safe: "Change only guide texts or images, keep the docs config structure and page titles as they are so links do not break, then open the changed page and check it displays correctly before saving." }
+];
+const BOXES = [
+  { id: "interface", title: "User Interface & Control", desc: "Everything the user touches: screens, terminal, and the changes tab." },
+  { id: "server", title: "Server & Memory", desc: "The brain behind the scenes: the server, the database, and shared tools." },
+  { id: "engine", title: "Agent Execution", desc: "The engine that launches agents and gives them a safe place to work." },
+  { id: "external", title: "External Gateways & Tools", desc: "Doors to the outside world: MCP, Google Sheets, and external assistants." },
+  { id: "plugins", title: "Plugins", desc: "Features that come from plugins: the wiki, the build kit, and fake Sandboxes." },
+  { id: "devdocs", title: "Development & Docs", desc: "What only developers see: tests, maps, and documentation." }
+];
+const FLOWS = [
+  { title: "First Run & Setup", phases: [
+    { t: "Entry: first screen", d: "The user runs the setup command from the terminal or opens the web wizard on an empty instance.", nodes: ["cli", "ui"] },
+    { t: "Action: create company and agent", d: "They name their company and pick its first agent (tool, model, account, run environment), then leave setup with a visible first task.", nodes: ["server"] },
+    { t: "Saving: company, agent, and task", d: "The company, agent, and first task are saved in Paperclip's database, and the wizard draft stays saved if they leave midway and return.", nodes: ["db"] },
+    { t: "Outside world: the agent starts", d: "The agent starts working through its external tool, and its result or required login gate appears on the control board.", nodes: ["runner", "adapters"] }
+  ] },
+  { title: "Task & Approval (Daily Work)", phases: [
+    { t: "Entry: control board", d: "The user enters the control board, opens their company, then the agents or tasks page.", nodes: ["ui"] },
+    { t: "Action: task and approval", d: "They create a task or delegate it to an agent; the agent works in repeated pulses, and if it requests a sensitive action, an approval request appears.", nodes: ["server", "runner"] },
+    { t: "Saving: task and its record", d: "The task, its status, activity log, and approvals are saved in the database, and every step is recorded in the events log.", nodes: ["db"] },
+    { t: "Outside world: result and alert", d: "When work completes, the result and outputs appear on the board, and the alert or live update is sent to the browser.", nodes: ["ui"] }
+  ] },
+  { title: "Connect an External Tool", phases: [
+    { t: "Entry: company tools", d: "The user opens company tools and clicks connect app, then connect by link.", nodes: ["ui"] },
+    { t: "Action: import tools", d: "They paste the MCP server link and key if any; Paperclip imports its tools and quarantines destructive tools until the operator releases them.", nodes: ["mcp-server"] },
+    { t: "Saving: connection and policies", d: "The connection record, the key as a secret, the policies, and the link are saved in the database, and every tool call is recorded in the audit log.", nodes: ["db"] },
+    { t: "Outside world: a real tool", d: "The agent calls the external app's tools (for example reading a real Google Sheet or saving a value in the demo board) and the result returns to the conversation.", nodes: ["sheets", "kv-demo"] }
+  ] },
+  { title: "Delegate from an External Assistant", phases: [
+    { t: "Entry: ChatGPT or Claude", d: "The user opens ChatGPT or Claude with the Paperclip plugin connected, having approved read or write permission.", nodes: ["integrations"] },
+    { t: "Action: delegate work", d: "They ask the assistant to delegate work, follow up a result, or review their team, and the assistant uses the plugin's written skills.", nodes: ["server", "runner"] },
+    { t: "Saving: an ordinary task", d: "The task or follow-up reaches the Paperclip company and is saved as an ordinary task with its record and approvals.", nodes: ["db"] },
+    { t: "Outside world: result returns", d: "The company's agents work on the task and the result returns to the external assistant to show to the user.", nodes: ["integrations"] }
+  ] }
+];
+
+const byId = (id) => NODES.find((n) => n.id === id);
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const G = [];
+G.push({ id: "paperclip", plain: "Paperclip", name: "paperclip", kind: "center", risk: null, x: 800, y: 500 });
+BOXES.forEach((b, i) => {
+  const a = (i / BOXES.length) * Math.PI * 2 - Math.PI / 2;
+  G.push({ id: "hub:" + b.id, plain: b.title, name: b.title, kind: "hub", risk: null, box: b.id, x: 800 + Math.cos(a) * 300, y: 500 + Math.sin(a) * 300 });
+});
+NODES.forEach((n) => {
+  const hub = G.find((g) => g.id === "hub:" + n.box);
+  const sibs = NODES.filter((m) => m.box === n.box);
+  const idx = sibs.indexOf(n);
+  const a = (idx / sibs.length) * Math.PI * 2 + (sibs.length > 1 ? 0.3 : 0);
+  G.push({ id: n.id, plain: n.plain, name: n.name, kind: "module", risk: n.risk, box: n.box, x: hub.x + Math.cos(a) * 170, y: hub.y + Math.sin(a) * 170 });
+});
+G.forEach((g) => { g.ax = g.x; g.ay = g.y; g.vx = 0; g.vy = 0; });
+const nodeById = (id) => G.find((g) => g.id === id);
+const EDGES = [];
+BOXES.forEach((b) => EDGES.push({ from: "paperclip", to: "hub:" + b.id, kind: "hub" }));
+NODES.forEach((n) => EDGES.push({ from: "hub:" + n.box, to: n.id, kind: "hub" }));
+const CROSS = [
+  ["ui", "server", "asks"], ["cli", "server", "commands"],
+  ["server", "db", "records in"], ["server", "runner", "launches"], ["server", "shared", "uses"],
+  ["adapters", "shared", "uses"], ["runner", "adapters", "runs via"], ["adapters", "adapter-utils", "uses"],
+  ["adapters", "sp-cloudflare", "books at"], ["adapters", "sp-createos", "books at"], ["adapters", "sp-daytona", "books at"],
+  ["adapters", "sp-e2b", "books at"], ["adapters", "sp-exedev", "books at"], ["adapters", "sp-k8s", "books at"],
+  ["adapters", "sp-modal", "books at"], ["adapters", "sp-novita", "books at"],
+  ["runner", "mcp-server", "calls tools"], ["runner", "sheets", "calls tools"], ["runner", "kv-demo", "calls tools"],
+  ["mcp-server", "server", "executes via"], ["mcp-server", "db", "logs calls in"],
+  ["integrations", "server", "delegates to"], ["integrations", "mcp-server", "connects via"],
+  ["sdk", "llm-wiki", "built with"], ["sdk", "workspace-diff", "built with"], ["sdk", "fake-sandbox", "built with"],
+  ["llm-wiki", "db", "writes to"], ["workspace-diff", "runner", "reads workspace of"]
+];
+CROSS.forEach(([f, t, l]) => EDGES.push({ from: f, to: t, label: l, kind: "cross" }));
+const R = (g) => g.kind === "center" ? 34 : g.kind === "hub" ? 24 : 17;
+const strokeOf = (g) => g.kind === "center" ? "#facc15" : g.kind === "hub" ? "#f59e0b" : RISK[g.risk][0];
+
+const svg = document.getElementById("svg");
+const vp = document.getElementById("vp");
+const NS = "http://www.w3.org/2000/svg";
+const edgeEls = [], labelEls = [], nodeEls = {};
+EDGES.forEach((e) => {
+  const line = document.createElementNS(NS, "line");
+  line.setAttribute("class", "edge " + e.kind);
+  if (e.kind === "cross") line.setAttribute("marker-end", "url(#arr)");
+  line.dataset.from = e.from; line.dataset.to = e.to;
+  vp.appendChild(line); edgeEls.push(line);
+  if (e.label) {
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("class", "edge-label");
+    t.textContent = e.label;
+    t.dataset.from = e.from; t.dataset.to = e.to;
+    vp.appendChild(t); labelEls.push(t);
+  }
+});
+G.forEach((g) => {
+  const grp = document.createElementNS(NS, "g");
+  grp.setAttribute("class", "node-g");
+  grp.dataset.id = g.id;
+  const c = document.createElementNS(NS, "circle");
+  c.setAttribute("r", R(g));
+  c.setAttribute("fill", "#111827");
+  c.setAttribute("stroke", strokeOf(g));
+  c.setAttribute("stroke-width", g.kind === "center" ? 4 : 3);
+  const t1 = document.createElementNS(NS, "text");
+  t1.setAttribute("class", "node-label");
+  t1.textContent = g.plain;
+  const t2 = document.createElementNS(NS, "text");
+  t2.setAttribute("class", "node-sub");
+  t2.textContent = g.kind === "hub" ? "" : g.name;
+  const tb = document.createElementNS(NS, "text");
+  tb.setAttribute("class", "mark-badge");
+  tb.textContent = "🔧";
+  grp.appendChild(c); grp.appendChild(t1); grp.appendChild(t2); grp.appendChild(tb);
+  vp.appendChild(grp); nodeEls[g.id] = grp;
+  grp.addEventListener("pointerdown", (ev) => {
+    ev.stopPropagation();
+    const start = toWorld(ev);
+    const ox = g.x, oy = g.y;
+    let moved = false;
+    const move = (e2) => {
+      const w = toWorld(e2);
+      g.fx = ox + (w.x - start.x); g.fy = oy + (w.y - start.y);
+      g.x = g.fx; g.y = g.fy; moved = true; render();
+    };
+    const up = () => {
+      svg.removeEventListener("pointermove", move);
+      svg.removeEventListener("pointerup", up);
+      if (!moved) { if (markMode) toggleMark(g.id); else selectNode(g.id); }
+    };
+    svg.addEventListener("pointermove", move);
+    svg.addEventListener("pointerup", up);
+  });
+});
+function render() {
+  EDGES.forEach((e, i) => {
+    const a = nodeById(e.from), b = nodeById(e.to);
+    edgeEls[i].setAttribute("x1", a.x); edgeEls[i].setAttribute("y1", a.y);
+    edgeEls[i].setAttribute("x2", b.x); edgeEls[i].setAttribute("y2", b.y);
+  });
+  let li = 0;
+  EDGES.forEach((e) => {
+    if (!e.label) return;
+    const a = nodeById(e.from), b = nodeById(e.to);
+    labelEls[li].setAttribute("x", (a.x + b.x) / 2);
+    labelEls[li].setAttribute("y", (a.y + b.y) / 2 - 6);
+    li++;
+  });
+  G.forEach((g) => {
+    const grp = nodeEls[g.id];
+    const c = grp.querySelector("circle");
+    c.setAttribute("cx", g.x); c.setAttribute("cy", g.y);
+    const ts = grp.querySelectorAll("text");
+    ts[0].setAttribute("x", g.x); ts[0].setAttribute("y", g.y + R(g) + 16);
+    ts[1].setAttribute("x", g.x); ts[1].setAttribute("y", g.y + R(g) + 31);
+    ts[2].setAttribute("x", g.x); ts[2].setAttribute("y", g.y - R(g) - 8);
+  });
+}
+function tick() {
+  EDGES.forEach((e) => {
+    const a = nodeById(e.from), b = nodeById(e.to);
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const d = Math.hypot(dx, dy) || 1;
+    const rest = e.kind === "hub" ? 130 : 100;
+    const f = (d - rest) / d * 0.03;
+    if (a.fx === undefined) { a.vx += dx * f; a.vy += dy * f; }
+    if (b.fx === undefined) { b.vx -= dx * f; b.vy -= dy * f; }
+  });
+  for (let i = 0; i < G.length; i++) for (let j = i + 1; j < G.length; j++) {
+    const a = G[i], b = G[j];
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const d = Math.hypot(dx, dy) || 1;
+    const min = R(a) + R(b) + 70;
+    if (d < min) {
+      const push = (min - d) / d * 0.35;
+      if (a.fx === undefined) { a.vx -= dx * push; a.vy -= dy * push; }
+      if (b.fx === undefined) { b.vx += dx * push; b.vy += dy * push; }
+    }
+  }
+  G.forEach((g) => {
+    if (g.fx !== undefined) return;
+    g.vx += (g.ax - g.x) * 0.006; g.vy += (g.ay - g.y) * 0.006;
+    g.vx *= 0.6; g.vy *= 0.6; g.x += g.vx; g.y += g.vy;
+  });
+}
+let simTimer = null;
+function runLayout() {
+  if (simTimer) clearInterval(simTimer);
+  let n = 0;
+  simTimer = setInterval(() => { tick(); render(); if (++n > 450) { clearInterval(simTimer); simTimer = null; } }, 16);
+}
+
+let view = { x: 0, y: 0, k: 1 };
+function applyView() { vp.setAttribute("transform", "translate(" + view.x + "," + view.y + ") scale(" + view.k + ")"); }
+function toWorld(ev) {
+  const r = svg.getBoundingClientRect();
+  return { x: (ev.clientX - r.left - view.x) / view.k, y: (ev.clientY - r.top - view.y) / view.k };
+}
+function fitView() {
+  const r = svg.getBoundingClientRect();
+  let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+  G.forEach((g) => { minX = Math.min(minX, g.x - 70); maxX = Math.max(maxX, g.x + 70); minY = Math.min(minY, g.y - 70); maxY = Math.max(maxY, g.y + 70); });
+  const k = Math.max(0.25, Math.min(1.2, Math.min(r.width / (maxX - minX), r.height / (maxY - minY)) * 0.95));
+  view.k = k;
+  view.x = (r.width - (maxX + minX) * k) / 2;
+  view.y = (r.height - (maxY + minY) * k) / 2;
+  applyView();
+}
+let panning = null;
+svg.addEventListener("pointerdown", (ev) => {
+  if (ev.target !== svg) return;
+  panning = { sx: ev.clientX, sy: ev.clientY, vx: view.x, vy: view.y, moved: false };
+  const move = (e2) => {
+    if (Math.hypot(e2.clientX - panning.sx, e2.clientY - panning.sy) > 5) panning.moved = true;
+    view.x = panning.vx + (e2.clientX - panning.sx); view.y = panning.vy + (e2.clientY - panning.sy); applyView();
+  };
+  const up = () => { svg.removeEventListener("pointermove", move); svg.removeEventListener("pointerup", up); const wasMove = panning.moved; panning = null; if (!wasMove) clearFocus(); };
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerup", up);
+});
+svg.addEventListener("wheel", (ev) => {
+  ev.preventDefault();
+  const r = svg.getBoundingClientRect();
+  const mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  const k2 = Math.max(0.25, Math.min(3, view.k * (ev.deltaY < 0 ? 1.1 : 0.9)));
+  const wx = (mx - view.x) / view.k, wy = (my - view.y) / view.k;
+  view.x = mx - wx * k2; view.y = my - wy * k2; view.k = k2;
+  applyView();
+}, { passive: false });
+document.getElementById("fitBtn").addEventListener("click", fitView);
+document.getElementById("resetBtn").addEventListener("click", () => {
+  G.forEach((g) => { g.fx = undefined; g.fy = undefined; g.vx = 0; g.vy = 0; });
+  runLayout(); setTimeout(fitView, 500);
+});
+
+let searchQ = "", riskF = "all", focusSet = null, selectedId = null;
+function refreshDim() {
+  const q = searchQ.trim();
+  G.forEach((g) => {
+    let vis = true;
+    if (g.kind === "module") {
+      const n = byId(g.id);
+      if (riskF === "safe" && n.risk !== "green") vis = false;
+      if (riskF === "sensitive" && n.risk === "green") vis = false;
+      if (q && !(n.name + " " + n.plain + " " + n.what).includes(q)) vis = false;
+    }
+    if (focusSet && !focusSet.has(g.id)) vis = false;
+    nodeEls[g.id].classList.toggle("dim", !vis);
+  });
+  EDGES.forEach((e, i) => {
+    let vis = true;
+    if (focusSet && !(focusSet.has(e.from) || focusSet.has(e.to))) vis = false;
+    edgeEls[i].classList.toggle("dim", !vis);
+    edgeEls[i].classList.toggle("hl", !!focusSet && (focusSet.has(e.from) || focusSet.has(e.to)) && e.kind === "cross");
+    edgeEls[i].setAttribute("marker-end", edgeEls[i].classList.contains("hl") ? "url(#arr-hl)" : (e.kind === "cross" ? "url(#arr)" : ""));
+  });
+  labelEls.forEach((t) => {
+    t.classList.toggle("dim", !!focusSet && !(focusSet.has(t.dataset.from) || focusSet.has(t.dataset.to)));
+  });
+}
+function panelHTML(html) { document.getElementById("panel").innerHTML = html; }
+function defaultPanel() {
+  panelHTML('<h2>Paperclip Mind Map</h2><p>Click any node to see its details here: what it is, what it does, what stops if it falls, and the safe-change sentence.</p><p><b>Paperclip</b> is an app that runs teams of AI agents: it launches them, gives them tasks, and asks your approval before any sensitive action.</p><p>Red nodes: 18 — mostly the execution core, the server, and gateways. Yellow: 5 — interfaces. Green: 7 — docs and tests.</p>');
+}
+function showDetail(id) {
+  selectedId = id;
+  const g = nodeById(id);
+  if (g.kind === "center") { focusSet = null; defaultPanel(); refreshDim(); return; }
+  if (g.kind === "hub") {
+    const b = BOXES.find((x) => "hub:" + x.id === id);
+    const ns = NODES.filter((n) => n.box === b.id);
+    focusSet = new Set([id].concat(ns.map((n) => n.id)));
+    panelHTML('<h2>' + esc(b.title) + '</h2><p>' + esc(b.desc) + '</p><p><b>Modules in this branch:</b></p>' + ns.map((n) => '<button class="nbtn" onclick="selectNode(\'' + n.id + '\')">' + esc(n.plain) + '</button>').join(''));
+    refreshDim(); return;
+  }
+  const n = byId(id);
+  const neigh = new Set([id]);
+  EDGES.forEach((e) => { if (e.from === id) neigh.add(e.to); if (e.to === id) neigh.add(e.from); });
+  focusSet = neigh;
+  const c = RISK[n.risk];
+  panelHTML('<h2>' + esc(n.plain) + ' <span class="dot" style="background:' + c[0] + '"></span></h2>'
+    + '<div class="real">' + esc(n.name) + '</div>'
+    + '<p><b>What is it?</b> ' + esc(n.what) + '</p>'
+    + '<p><b>What does it do?</b> ' + esc(n.role) + '</p>'
+    + '<div class="cons"><b>⚠️ If it falls:</b> ' + esc(n.cons) + '<br><span style="color:#9ca3af">Risk level: ' + esc(c[1]) + '</span></div>'
+    + '<p><b>Safe-change sentence:</b> ' + esc(n.safe) + '</p>'
+    + '<button class="copy" id="copyBtn">📋 Copy safe-change sentence</button>');
+  document.getElementById("copyBtn").addEventListener("click", (e) => {
+    const done = () => { e.target.textContent = "✓ Copied"; setTimeout(() => e.target.textContent = "📋 Copy safe-change sentence", 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(n.safe).then(done).catch(done); else done();
+  });
+  refreshDim();
+}
+function selectNode(id) { showDetail(id); }
+let markMode = false;
+const marked = new Set();
+function updateMarkUI() {
+  document.getElementById("markBtn").classList.toggle("active", markMode);
+  const c = document.getElementById("markCount");
+  if (marked.size) { c.style.display = ""; c.textContent = "🔧 " + marked.size + " places marked"; }
+  else c.style.display = "none";
+}
+function toggleMark(id) {
+  if (marked.has(id)) { marked.delete(id); nodeEls[id].classList.remove("marked"); }
+  else { marked.add(id); nodeEls[id].classList.add("marked"); }
+  updateMarkUI();
+  if (markMode) showMarkedList();
+}
+function removeMark(id) {
+  marked.delete(id);
+  if (nodeEls[id]) nodeEls[id].classList.remove("marked");
+  updateMarkUI(); showMarkedList();
+}
+function showMarkedList() {
+  const items = Array.from(marked).map((id) => byId(id)).filter(Boolean);
+  let html = '<h2>🔧 Marked places to modify</h2><p>Click nodes while marking mode is on to add or remove them. This is the list of places we will change — the start of the modification wave.</p>';
+  if (!items.length) html += '<p>No places marked yet — turn on marking mode and click nodes.</p>';
+  items.forEach((n) => {
+    html += '<div style="display:flex;gap:8px;align-items:center;margin:6px 0"><button class="nbtn" style="flex:1" onclick="selectNode(\'' + n.id + '\')"><span class="dot" style="background:' + RISK[n.risk][0] + '"></span> ' + esc(n.plain) + '</button><button class="tbtn" onclick="removeMark(\'' + n.id + '\')">✕</button></div>';
+  });
+  if (items.length) {
+    html += '<button class="copy" id="copyPlanBtn" style="background:#f59e0b;color:#111827;border:none;border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:bold;font-size:14px;margin-top:8px">📋 Copy modification plan</button> <button class="tbtn" id="clearMarksBtn">Clear all</button>';
+  }
+  panelHTML(html);
+  const cp = document.getElementById("copyPlanBtn");
+  if (cp) cp.addEventListener("click", (e) => {
+    const txt = items.map((n) => "• " + n.name + " — " + n.plain + " [" + RISK[n.risk][1] + "] — " + n.cons).join("\n");
+    const done = () => { e.target.textContent = "✓ Plan copied"; setTimeout(() => e.target.textContent = "📋 Copy modification plan", 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done).catch(done); else done();
+  });
+  const cl = document.getElementById("clearMarksBtn");
+  if (cl) cl.addEventListener("click", () => {
+    marked.forEach((id) => { if (nodeEls[id]) nodeEls[id].classList.remove("marked"); });
+    marked.clear(); updateMarkUI(); showMarkedList();
+  });
+}
+document.getElementById("markBtn").addEventListener("click", () => {
+  markMode = !markMode; updateMarkUI();
+  if (markMode) showMarkedList(); else defaultPanel();
+});
+document.getElementById("markCount").addEventListener("click", showMarkedList);
+function clearFocus() { focusSet = null; selectedId = null; defaultPanel(); refreshDim(); }
+document.querySelectorAll(".chip.risk").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll(".chip.risk").forEach((x) => x.classList.remove("active"));
+  b.classList.add("active"); riskF = b.dataset.risk; refreshDim();
+}));
+document.getElementById("search").addEventListener("input", (e) => { searchQ = e.target.value; refreshDim(); });
+
+let curFlow = 0, curPhase = 0, tourOn = false;
+function renderTour() {
+  const f = FLOWS[curFlow], ph = f.phases[curPhase];
+  document.getElementById("phaseText").innerHTML = '<b>' + esc(f.title) + ' — ' + esc(ph.t) + '</b><br>' + esc(ph.d)
+    + '<br><span style="color:#9ca3af">Modules in this stop: </span>' + ph.nodes.map((id) => { const n = byId(id); return '<button class="chip" onclick="selectNode(\'' + id + '\')">' + esc(n.plain) + '</button>'; }).join(' ');
+  const reds = ph.nodes.map(byId).filter((n) => n.risk === "red");
+  document.getElementById("phaseAlert").innerHTML = reds.length
+    ? '<div class="alert">⚠️ This stop is sensitive — any change here breaks: ' + reds.map((n) => esc(n.name) + ' — ' + esc(n.cons)).join('<br>') + '</div>' : '';
+  document.getElementById("dots").innerHTML = f.phases.map((_, i) => '<button data-i="' + i + '" class="' + (i === curPhase ? 'cur' : '') + '"></button>').join('');
+  document.querySelectorAll("#dots button").forEach((b) => b.addEventListener("click", () => { curPhase = +b.dataset.i; startTour(); renderTour(); }));
+  document.getElementById("prevBtn").disabled = curPhase === 0;
+  document.getElementById("nextBtn").textContent = curPhase === f.phases.length - 1 ? "Finish tour" : "Next";
+}
+function startTour() {
+  tourOn = true;
+  document.getElementById("exitTour").style.display = "";
+  const ph = FLOWS[curFlow].phases[curPhase];
+  focusSet = new Set(ph.nodes);
+  refreshDim();
+}
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (!tourOn) { startTour(); renderTour(); return; }
+  const f = FLOWS[curFlow];
+  if (curPhase < f.phases.length - 1) { curPhase++; startTour(); renderTour(); }
+  else { clearFocus(); document.getElementById("exitTour").style.display = "none"; tourOn = false; }
+});
+document.getElementById("prevBtn").addEventListener("click", () => { if (curPhase > 0) { curPhase--; startTour(); renderTour(); } });
+document.getElementById("exitTour").addEventListener("click", () => { clearFocus(); document.getElementById("exitTour").style.display = "none"; tourOn = false; });
+document.querySelectorAll(".chip.flow").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll(".chip.flow").forEach((x) => x.classList.remove("active"));
+  b.classList.add("active"); curFlow = +b.dataset.flow; curPhase = 0; startTour(); renderTour();
+}));
+defaultPanel(); render(); runLayout(); renderTour();
+window.addEventListener("load", () => setTimeout(fitView, 600));
+setTimeout(fitView, 1200);
+
+</script>
+</body>
+</html>
