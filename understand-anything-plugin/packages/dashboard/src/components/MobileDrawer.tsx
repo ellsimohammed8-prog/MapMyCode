@@ -99,8 +99,8 @@ export default function MobileDrawer({
 
       {/* Panel */}
       <aside
-        className={`absolute left-0 top-0 bottom-0 w-[86%] max-w-[360px] bg-surface border-r border-border-subtle flex flex-col transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "-translate-x-full"
+        className={`absolute start-0 top-0 bottom-0 w-[86%] max-w-[360px] bg-surface border-e border-border-subtle flex flex-col transition-transform duration-300 ease-out ${
+          open ? "translate-x-0" : "-translate-x-full rtl:translate-x-full"
         }`}
         role="dialog"
         aria-label="Settings"

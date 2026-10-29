@@ -129,7 +129,7 @@ A multi-agent pipeline scans your project, extracts every file, function, class,
 # Generate Chinese content (知识图节点描述和 Dashboard UI)
 /understand --language zh
 
-# Supported languages: en (default), zh, zh-TW, ja, ko, ru, vi
+# Supported languages: any ISO 639-1 code or friendly name — there is no fixed list (en is the default). The dashboard UI ships translated dictionaries for en, zh, zh-TW, ja, ko, ru, vi, ar, and switches to RTL layout for RTL languages (ar, fa, he, ur); other codes fall back to English UI text while generated content is still produced in the requested language.
 ```
 
 On the **first run** in a project — when you don't pass `--language` and no language is stored yet — `/understand` detects the language you're conversing in. If it isn't English, it asks you to confirm (or override) before generating; English conversations are unaffected. Your choice is saved to `.ua/config.json` and reused on every later run.

@@ -148,11 +148,12 @@ Determine whether to run a full analysis or incremental update.
  3.6. **Language configuration:**
     - Parse `$ARGUMENTS` for `--language <lang>` flag. If found, extract the language code.
     - **Language code normalization:** Map friendly names to ISO codes:
-      - `chinese` → `zh`, `japanese` → `ja`, `korean` → `ko`, `english` → `en`, `spanish` → `es`, `french` → `fr`, `german` → `de`, `portuguese` → `pt`, `russian` → `ru`, `vietnamese` → `vi`, `arabic` → `ar`, etc.
+      - `chinese` → `zh`, `japanese` → `ja`, `korean` → `ko`, `english` → `en`, `spanish` → `es`, `french` → `fr`, `german` → `de`, `portuguese` → `pt`, `russian` → `ru`, `vietnamese` → `vi`, `arabic` → `ar`, `persian` → `fa`, `hebrew` → `he`, `urdu` → `ur`, etc.
       - Locale variants: `zh-TW`, `zh-HK`, `zh-CN`, `pt-BR`, etc. are preserved as-is.
+    - **No fixed supported list.** Any ISO 639-1 code or friendly name is accepted — there is no list of "supported" languages to check against. Never reject an unknown language code: normalize it (lowercase; keep the base code, e.g. `ar-SA` → `ar` for lookup while preserving the full tag where the dashboard needs it) and use it as-is. If the dashboard has no translated UI dictionary for the code yet, it falls back to English UI text — but generated graph content (summaries, descriptions, tours) is still produced in the requested language.
     - If `--language` is NOT specified:
       - **Stored preference wins.** If `$UA_DIR/config.json` has an `outputLanguage` field, set `$OUTPUT_LANGUAGE` to it and skip the rest.
-      - **Otherwise detect (first run only).** Infer the predominant language of the user's conversation as an ISO 639-1 code (`$DETECTED_LANG`). If it is `en` or cannot be confidently determined, set `$OUTPUT_LANGUAGE=en` and proceed silently — no prompt (English users see no change).
+      - **Otherwise detect (first run only).** Infer the predominant language of the user's conversation as an ISO 639-1 code (`$DETECTED_LANG`). Detection applies to any language — there is no fixed list of detectable languages. If it is `en` or cannot be confidently determined, set `$OUTPUT_LANGUAGE=en` and proceed silently — no prompt (English users see no change).
       - **If `$DETECTED_LANG` ≠ `en`, confirm once before analyzing:** tell the user you detected `<language>` and ask whether to generate all content in it; they press Enter/"yes" to accept, or type another language code/name to override (normalize via the friendly-name map above). If running non-interactively (no reply possible), skip the wait, use `$DETECTED_LANG`, and print a one-line notice instead of blocking.
       - **Persist** the resolved `$OUTPUT_LANGUAGE` (including `en`) into `config.json` so it never re-prompts for this project.
     - If `--language` IS specified:
@@ -162,6 +163,7 @@ Determine whether to run a full analysis or incremental update.
       ```markdown
       > **Language directive**: Generate all textual content (summaries, descriptions, tags, titles, languageNotes, languageLesson) in **{language}**. Maintain technical accuracy while using natural, native-level phrasing in the target language. Keep technical terms in English when no standard translation exists (e.g., "middleware", "hook", "barrel").
       ```
+    - **Dashboard follows the same code.** The dashboard UI uses the same `$OUTPUT_LANGUAGE` code as the generated content, and switches to RTL layout when the code is an RTL language (`ar`, `fa`, `he`, `ur`).
 
  3.7. **Exclude patterns:**
     - Parse `$ARGUMENTS` for `--exclude <patterns>` flag. If found, extract the comma-separated patterns string.

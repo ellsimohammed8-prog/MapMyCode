@@ -77,21 +77,21 @@ function MarkdownView({ content }: { content: string }) {
               {children}
             </a>
           ),
-          ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
+          ul: ({ children }) => <ul className="list-disc ps-5 mb-3 space-y-1">{children}</ul>,
+          ol: ({ children }) => <ol className="list-decimal ps-5 mb-3 space-y-1">{children}</ol>,
           blockquote: ({ children }) => (
-            <blockquote className="border-l-2 border-accent/40 pl-3 text-text-muted italic mb-3">{children}</blockquote>
+            <blockquote dir="auto" className="border-s-2 border-accent/40 ps-3 text-text-muted italic mb-3">{children}</blockquote>
           ),
           hr: () => <hr className="border-border-subtle my-4" />,
           pre: ({ children }) => (
-            <pre className="bg-elevated border border-border-subtle rounded-lg p-3 mb-3 overflow-x-auto text-xs font-mono">
+            <pre dir="ltr" className="bg-elevated border border-border-subtle rounded-lg p-3 mb-3 overflow-x-auto text-xs font-mono">
               {children}
             </pre>
           ),
           code: ({ className, children }) => {
             const isInline = !className && !String(children).includes("\n");
             return isInline ? (
-              <code className="bg-elevated px-1.5 py-0.5 rounded text-[0.85em] font-mono text-accent">{children}</code>
+              <code dir="ltr" className="bg-elevated px-1.5 py-0.5 rounded text-[0.85em] font-mono text-accent">{children}</code>
             ) : (
               <code className={className}>{children}</code>
             );
@@ -102,7 +102,7 @@ function MarkdownView({ content }: { content: string }) {
             </div>
           ),
           th: ({ children }) => (
-            <th className="border border-border-subtle bg-elevated px-2.5 py-1.5 text-left text-text-primary font-semibold">
+            <th className="border border-border-subtle bg-elevated px-2.5 py-1.5 text-start text-text-primary font-semibold">
               {children}
             </th>
           ),
@@ -228,7 +228,7 @@ export default function CodeViewer({
             {node.name}
           </div>
           {node.filePath && (
-            <div className="text-[11px] font-mono text-text-muted truncate mt-0.5" title={node.filePath}>
+            <div className="text-[11px] font-mono text-text-muted truncate mt-0.5" dir="ltr" title={node.filePath}>
               {node.filePath}
             </div>
           )}
@@ -307,6 +307,7 @@ export default function CodeViewer({
             <Highlight code={source.content} language={language} theme={themes.vsDark}>
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre
+                  dir="ltr"
                   className={`${className} min-w-max p-0 m-0 ${
                     isModal ? "text-xs leading-5" : "text-[11px] leading-5"
                   } font-mono`}

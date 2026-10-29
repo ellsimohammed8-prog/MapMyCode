@@ -155,7 +155,7 @@ export default function SearchBar() {
                 key={result.nodeId}
                 type="button"
                 onClick={() => handleResultClick(result.nodeId)}
-                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-elevated transition-colors text-left"
+                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-elevated transition-colors text-start"
               >
                 {/* Type badge */}
                 <span
@@ -177,7 +177,7 @@ export default function SearchBar() {
                       style={{ width: `${relevance}%` }}
                     />
                   </div>
-                  <span className="text-[10px] text-text-muted w-7 text-right">
+                  <span className="text-[10px] text-text-muted w-7 text-end">
                     {relevance}%
                   </span>
                 </div>

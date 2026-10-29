@@ -22,6 +22,13 @@ describe("resolveLocaleKey", () => {
     expect(resolveLocaleKey("Vietnamese")).toBe("vi");
   });
 
+  it("resolves Arabic codes and friendly names", () => {
+    expect(resolveLocaleKey("ar")).toBe("ar");
+    expect(resolveLocaleKey("arabic")).toBe("ar");
+    expect(resolveLocaleKey("ar-SA")).toBe("ar");
+    expect(resolveLocaleKey("Arabic")).toBe("ar");
+  });
+
   it("falls back to English for unknown languages", () => {
     expect(resolveLocaleKey("xx")).toBe("en");
     expect(resolveLocaleKey(undefined)).toBe("en");
@@ -34,11 +41,20 @@ describe("locales", () => {
     expect(locales.vi.onboarding.steps).toHaveLength(locales.en.onboarding.steps.length);
   });
 
+  it("exposes an Arabic locale with the English key shape", () => {
+    expect(keyShape(locales.ar)).toEqual(keyShape(locales.en));
+    expect(locales.ar.onboarding.steps).toHaveLength(locales.en.onboarding.steps.length);
+  });
+
   it("lists every locale in the record", () => {
-    expect(Object.keys(locales).sort()).toEqual(["en", "ja", "ko", "ru", "vi", "zh", "zh-TW"]);
+    expect(Object.keys(locales).sort()).toEqual(["ar", "en", "ja", "ko", "ru", "vi", "zh", "zh-TW"]);
   });
 
   it("returns the Vietnamese locale via getLocale", () => {
     expect(getLocale("vi")).toBe(locales.vi);
+  });
+
+  it("returns the Arabic locale via getLocale", () => {
+    expect(getLocale("ar")).toBe(locales.ar);
   });
 });

@@ -103,7 +103,7 @@ export default function FilterPanel() {
       </button>
 
       {filterPanelOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 glass rounded-lg shadow-xl overflow-hidden animate-fade-slide-in z-50">
+        <div className="absolute end-0 top-full mt-2 w-72 glass rounded-lg shadow-xl overflow-hidden animate-fade-slide-in z-50">
           <div className="p-4 space-y-4">
             {/* Node Types */}
             <div>

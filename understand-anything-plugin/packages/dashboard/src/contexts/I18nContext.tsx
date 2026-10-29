@@ -1,9 +1,17 @@
-import { createContext, useContext, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { getLocale, resolveLocaleKey, type Locale, type LocaleKey } from "../locales";
+
+/** Language codes written right-to-left. Only "ar" has a dashboard dictionary
+ *  today; fa/he/ur are listed so direction follows automatically when their
+ *  dictionaries land, without touching this file again. */
+const RTL_LANGUAGE_CODES = new Set(["ar", "fa", "he", "ur"]);
+
+export type TextDirection = "ltr" | "rtl";
 
 interface I18nContextValue {
   locale: Locale;
   localeKey: LocaleKey;
+  dir: TextDirection;
   t: Locale;
 }
 
@@ -26,14 +34,22 @@ export function I18nProvider({
 }) {
   const localeKey = useMemo(() => resolveLocaleKey(language), [language]);
   const locale = useMemo(() => getLocale(localeKey), [localeKey]);
+  const dir: TextDirection = RTL_LANGUAGE_CODES.has(localeKey) ? "rtl" : "ltr";
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.dir = dir;
+    document.documentElement.lang = localeKey;
+  }, [dir, localeKey]);
 
   const value = useMemo(
     () => ({
       locale,
       localeKey,
+      dir,
       t: locale,
     }),
-    [locale, localeKey]
+    [locale, localeKey, dir]
   );
 
   return (

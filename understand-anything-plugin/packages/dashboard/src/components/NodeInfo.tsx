@@ -112,7 +112,7 @@ function KnowledgeNodeDetails({ node, graph }: { node: GraphNode; graph: Knowled
                 key={n.id}
                 type="button"
                 onClick={() => navigateToNode(n.id)}
-                className="block w-full text-left px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors truncate"
+                className="block w-full text-start px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors truncate"
               >
                 {n.name}
               </button>
@@ -131,7 +131,7 @@ function KnowledgeNodeDetails({ node, graph }: { node: GraphNode; graph: Knowled
                 key={n.id}
                 type="button"
                 onClick={() => navigateToNode(n.id)}
-                className="block w-full text-left px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors truncate"
+                className="block w-full text-start px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors truncate"
               >
                 {n.name}
               </button>
@@ -207,7 +207,7 @@ function DomainNodeDetails({ node, graph }: { node: GraphNode; graph: KnowledgeG
                   key={f.id}
                   type="button"
                   onClick={() => { navigateToDomain(node.id); selectNode(f.id); }}
-                  className="block w-full text-left px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors"
+                  className="block w-full text-start px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] text-text-secondary hover:text-accent transition-colors"
                 >
                   {f.name}
                 </button>
@@ -231,7 +231,7 @@ function DomainNodeDetails({ node, graph }: { node: GraphNode; graph: KnowledgeG
         {meta?.entryPoint ? (
           <div>
             <h4 className="text-[10px] uppercase tracking-wider text-text-muted mb-1">{t.nodeInfo.entryPoint}</h4>
-            <div className="text-[11px] font-mono text-accent">{meta.entryPoint}</div>
+            <div className="text-[11px] font-mono text-accent" dir="ltr">{meta.entryPoint}</div>
           </div>
         ) : null}
         {steps.length > 0 && (
@@ -243,9 +243,9 @@ function DomainNodeDetails({ node, graph }: { node: GraphNode; graph: KnowledgeG
                   <button
                     type="button"
                     onClick={() => selectNode(s.id)}
-                    className="block w-full text-left px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] transition-colors"
+                    className="block w-full text-start px-2 py-1.5 rounded bg-elevated hover:bg-accent/10 text-[11px] transition-colors"
                   >
-                    <span className="text-accent/60 mr-1.5">{i + 1}.</span>
+                    <span className="text-accent/60 me-1.5">{i + 1}.</span>
                     <span className="text-text-secondary hover:text-accent">{s.name}</span>
                   </button>
                 </li>
@@ -410,10 +410,10 @@ export default function NodeInfo() {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="font-medium text-text-muted mb-1">{t.common.file}</div>
-              <div className="font-mono truncate" title={node.filePath}>
+              <div className="font-mono truncate" dir="ltr" title={node.filePath}>
                 {node.filePath}
                 {node.lineRange && (
-                  <span className="ml-2 text-text-muted">
+                  <span className="ms-2 text-text-muted">
                     L{node.lineRange[0]}-{node.lineRange[1]}
                   </span>
                 )}
@@ -437,7 +437,7 @@ export default function NodeInfo() {
             className="flex items-center gap-1.5 text-xs font-semibold text-accent uppercase tracking-wider mb-2 hover:text-accent-bright transition-colors"
           >
             <svg
-              className={`w-3 h-3 transition-transform ${languageExpanded ? "rotate-90" : ""}`}
+              className={`w-3 h-3 transition-transform rtl:-scale-x-100 ${languageExpanded ? "rotate-90" : ""}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -465,6 +465,7 @@ export default function NodeInfo() {
             {node.tags.map((tag) => (
               <span
                 key={tag}
+                dir="ltr"
                 className="text-[11px] glass text-text-secondary px-2.5 py-1 rounded-full"
               >
                 {tag}
@@ -506,12 +507,12 @@ export default function NodeInfo() {
                       {child.type}
                     </span>
                     <span className="text-text-primary truncate">{child.name}</span>
-                    <span className={`text-[9px] ml-auto ${childComplexity} px-1 py-0.5 rounded`}>
+                    <span className={`text-[9px] ms-auto ${childComplexity} px-1 py-0.5 rounded`}>
                       {child.complexity}
                     </span>
                   </div>
                   {child.summary && (
-                    <p className="text-[11px] text-text-muted mt-1 line-clamp-1 pl-1">
+                    <p className="text-[11px] text-text-muted mt-1 line-clamp-1 ps-1">
                       {child.summary}
                     </p>
                   )}
